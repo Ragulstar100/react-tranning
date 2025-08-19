@@ -71,41 +71,38 @@ function validate() {
     const { userName, password } = this
     const validateArray = new Array(Object.keys(this).length)
 
+if (!(/^[A-Za-z0-9]*(_[A-Za-z0-9]+)*$/.test(userName)||/^[A-Za-z0-9]*(_[A-Za-z0-9]+)*_$/.test(userName))) {
+    validateArray[0] = "Not valid";
+} else if (userName.length > 20) {
+    validateArray[0] = "Length Exceed UserName";
+}
 
-    if (userName.length > 20) {
-        validateArray[0] = "Length Exceed UseName"
-    }
-    else if (/[`"']/.test(userName)) {
-        validateArray[0] = "Not Accept \`\'\""
-    }
 
     if (password.length > 10) {
         validateArray[1] = "Length Exceed Password"
     }
-    else if (/[`"']/.test(password)) {
-        validateArray[1] = "Not Accept \`\'\""
-    }
-
-
 
     return validateArray
 
 }
 
 
-function validate1(finalValidation, showInputValidateError) {
+function validate1(finalValidation, showinputValidate) {
 
     const { userName, password } = this
     const validateArray = new Array(Object.keys(this).length)
 
-    // if(showInputValidateError===undefined) {
-    //     throw "Enter showInputValidateError"
+    // if(showinputValidate(auth)Error===undefined) {
+    //     throw "Enter showinputValidate(auth)Error"
     // }
 
-    if (showInputValidateError) {
+ 
+    if (showinputValidate) {
         //UserName Validate
         if (!userName && userName.trim() == '') {
             validateArray[0] = "User Name Is Empty"
+        }else if(/^[A-Za-z0-9]*(_[A-Za-z0-9]+)*_$/.test(userName)){
+            validateArray[0]=" should add word behind _"
         }
 
 
@@ -144,39 +141,52 @@ function Login({ _setUser,className,rememberMe }) {
 
     const [_rememberMe,setRememberMe]=useState(false)
 
-    
+    const clearFields=()=>{ 
+       setAuth((auth1)=>{
+        return {...auth1,userName:"",password:""}
+       })
+    }
 
+    const inputValidate= (_auth) =>{  return _auth.validate1(undefined,true).filter((e)=>e).length==0}
+
+    const inputFieldAnyNotEmpty=(_auth)=> !(_auth.userName.trim()||_auth.password.trim())
+
+    
+    
     return <form className={'size-100 shadow-2xl rounded-2xl flex flex-col items-center gap-2 '+className}>
         <p className='w-full text-4xl text-center pt-5'>Login</p>
 
         {/*User Name*/}
-        <label className='flex items-center gap-2 p-2'> UserName <input placeholder='Enter user Name' autoFocus type="text" value={auth.userName} onChange={(name) => {
+        <div>
+        <label className='flex items-center gap-2 p-2'> UserName <input placeholder='Enter user Name' autoFocus tabIndex={0} type="text" value={auth.userName} onChange={(name) => {
             let _auth = { ...auth, userName: name.target.value }
             if (!_auth.validate()[0]) setAuth(_auth)
         }
 
         } className='pl-5 py-2 text-xl border-2 border-gray-300  focus:outline-cyan-400' /> </label>
-        <p className='text-red-400 h-5'>{auth.validate1(undefined, validatRef.current)[0] || ''}</p>
+        <p className='text-red-400'>{auth.validate1(undefined, validatRef.current)[0] || ''}</p>
+        </div>
 
         {/*Password*/}
-        <label className='flex items-center gap-2'> Password <input type="password" placeholder='Enter Password' value={auth.password} onChange={(pas) => {
+     
+        <label className='flex items-center gap-2'> Password <input type="password" placeholder='Enter Password'  value={auth.password} onChange={(pas) => {
             let _auth = { ...auth, password: pas.target.value }
             if (!_auth.validate()[1]) setAuth(_auth)
 
         }} className='pl-5 py-2 text-xl border-2 border-gray-300  focus:outline-cyan-400' onCopy={(e) => e.preventDefault()}
             onCut={(e) => e.preventDefault()} onPaste={(e) => { e.preventDefault() }} /> </label>
-        <p className='text-red-400 h-5'>{auth.validate1(useEffect, validatRef.current)[1] || ''}</p>
+        <p className='text-red-400'>{auth.validate1(useEffect, validatRef.current)[1] || ''}</p>
 
-
-        <button type='button' className=" bg-cyan-400 rounded-2xl text-2xl self-end mr-5 mb-5 mt-auto p-3" onClick={() => {
+        <div className='flex w-[90%] justify-end'>
+        <button type='button' tabIndex={(inputValidate(auth))?-1:0 }  onClick={clearFields} className=" bg-cyan-400 rounded-xl text-2xl self-end mr-5 mb-5 mt-auto p-2" disabled={inputFieldAnyNotEmpty(auth)} >Clear</button>   
+        <button type='button' tabIndex={(!validatRef.current||inputValidate(auth))?0:-1 }  className=" bg-cyan-400 rounded-xl text-2xl self-end mr-5 mb-5 mt-auto p-2" onClick={() => {
             validatRef.current = true
         
-       
-
-          if(auth.validate1(undefined,validatRef.current).filter((e)=>e).length==0) {
+    
+          if(inputValidate(auth)) {
            auth.validate1((value) => {
 
-                alert(value)
+        
                 let loginDataRaw = getLoginData(auth);
                 let loginData = loginDataRaw ? JSON.parse(loginDataRaw) : { userName: auth.userName, time: Date.now(), nuperOfLoginAttempt: 0 };
                 let nuperOfLoginAttemptTotal=3
@@ -216,8 +226,6 @@ function Login({ _setUser,className,rememberMe }) {
 
             }, validatRef.current)
 
-        }else{
-            alert("Enter All The Textbox Currectly")
         }
 
          setAuth(prevAuth => ({
@@ -226,7 +234,8 @@ function Login({ _setUser,className,rememberMe }) {
         
 
 
-        }}>Submit</button>
+        }} disabled={validatRef.current&&!inputValidate(auth)}>Submit</button></div>
+       
 
       <div className='flex h-10 w-full justify-around items-center'><button onClick={()=>alert("Please Contact +91 6382174793")}>Forgot Password</button> <label className='  mr-5'>Remember Me <input type="checkbox" onChange={(e)=>setRememberMe(e.currentTarget.value)} value={_rememberMe} /></label></div>
 
