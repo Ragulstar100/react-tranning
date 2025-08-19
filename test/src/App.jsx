@@ -10,6 +10,12 @@ const getUser = () => JSON.parse(localStorage.getItem("user"))
 
 const removeUser = () => localStorage.removeItem("user")
 
+const setSessionUser = (user) => sessionStorage.setItem("users", JSON.stringify(user))
+
+const getSessionUser = () => JSON.parse(sessionStorage.getItem("users"))
+
+const removeSessionUser = () => sessionStorage.removeItem("users")
+
 const logindata = {
     userName: "admin",
     token: "none",
@@ -34,12 +40,11 @@ const removeLoginData = (data) => localStorage.removeItem("loginData" + data.use
 
 function App() {
 
-    const [auth, setAuth] = useState(getUser())
+    const [auth, setAuth] = useState(getUser()||getSessionUser())
 
 
     if (!auth) {
-        return<div className='flex flex-col w-screen h-full'><p className=' text-center w-200 py-5 '>Welcome My Game Analystics Website</p> <Login className="text-center w-f  m-auto" _setUser={(auth) => {
-            setUser(auth) 
+        return<div className='flex flex-col w-screen h-full'><p className=' text-center w-full py-5 '>Welcome My Game Analystics Website</p> <Login className="text-center   m-auto" _setUser={(auth) => {
             setAuth(auth)
         }} /></div>
 
@@ -47,9 +52,10 @@ function App() {
         return <SplashScreen>
 
             <div className='w-screen self-start p-5 flex justify-between items-center'>
-                <p className=''>Welcome {getUser().userName}</p>
+                <p className=''>Welcome {auth.userName}</p>
                 <button type='button' onClick={() => {
                     removeUser()
+                    removeSessionUser()
                     window.location.reload();//Totally Website Reload with splash screen
                 }}>
                     LogOut
@@ -60,7 +66,7 @@ function App() {
 
 }
 
-function validate(finalValidation) {
+function validate() {
 
     const { userName, password } = this
     const validateArray = new Array(Object.keys(this).length)
@@ -81,18 +87,6 @@ function validate(finalValidation) {
     }
 
 
-    //     //Final Validate
-
-    //         fetch("/auth.json").then(res=>res.json()).then((userList)=>{
-    //         if(finalValidation){
-    //         if(userList.filter((user)=>user.userName==userName&&user.password==password).length==0){
-    //          finalValidation("User Name Or PassWord Invalid")
-    //         }else{
-    //             finalValidation(undefined)
-    //         }
-    // }
-    //     }
-    //     ).catch((error)=>{throw error})
 
     return validateArray
 
@@ -143,11 +137,14 @@ function validate1(finalValidation, showInputValidateError) {
 
 
 
-function Login({ _setUser,className }) {
+function Login({ _setUser,className,rememberMe }) {
 
     const validatRef = useRef(false)
-    const [auth, setAuth] = useState({ userName: "", password: "", validate, validate1, showInputValidateError: validatRef.current })
+    const [auth, setAuth] = useState({ userName: "", password: "", validate, validate1 })
 
+    const [_rememberMe,setRememberMe]=useState(false)
+
+    
 
     return <form className={'size-100 shadow-2xl rounded-2xl flex flex-col items-center gap-2 '+className}>
         <p className='w-full text-4xl text-center pt-5'>Login</p>
@@ -173,8 +170,13 @@ function Login({ _setUser,className }) {
 
         <button type='button' className=" bg-cyan-400 rounded-2xl text-2xl self-end mr-5 mb-5 mt-auto p-3" onClick={() => {
             validatRef.current = true
-            auth.validate1((value) => {
+        
+       
 
+          if(auth.validate1(undefined,validatRef.current).filter((e)=>e).length==0) {
+           auth.validate1((value) => {
+
+                alert(value)
                 let loginDataRaw = getLoginData(auth);
                 let loginData = loginDataRaw ? JSON.parse(loginDataRaw) : { userName: auth.userName, time: Date.now(), nuperOfLoginAttempt: 0 };
                 let nuperOfLoginAttemptTotal=3
@@ -194,7 +196,15 @@ function Login({ _setUser,className }) {
                     } else {
                         loginData.nuperOfLoginAttempt = 0; // Reset attempts on successful login
                         loginData.time = Date.now();
+                       if(_rememberMe){
                         setLoginData(loginData);
+                        setUser(auth) 
+                       }else{
+                        setLoginData(loginData);
+                        setSessionUser(auth)
+                
+                       }
+
                         _setUser(auth);
                     }
                 } else {
@@ -205,13 +215,20 @@ function Login({ _setUser,className }) {
                 }
 
             }, validatRef.current)
-            setAuth(prevAuth => ({
+
+        }else{
+            alert("Enter All The Textbox Currectly")
+        }
+
+         setAuth(prevAuth => ({
                 ...prevAuth,
-                showInputValidateError: true
             }));
+        
 
 
         }}>Submit</button>
+
+      <div className='flex h-10 w-full justify-around items-center'><button onClick={()=>alert("Please Contact +91 6382174793")}>Forgot Password</button> <label className='  mr-5'>Remember Me <input type="checkbox" onChange={(e)=>setRememberMe(e.currentTarget.value)} value={_rememberMe} /></label></div>
 
 
     </form>
