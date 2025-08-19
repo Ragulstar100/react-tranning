@@ -29,7 +29,7 @@ const setLoginData = (data) => localStorage.setItem("loginData" + data.userName,
 
 const getLoginData = (data) => localStorage.getItem("loginData" + data.userName) ? localStorage.getItem("loginData" + data.userName) : null;
 
-const removeLoginData = (data) => localStorage.removeItem("loginData" + data.userName);
+//const removeLoginData = (data) => localStorage.removeItem("loginData" + data.userName);
 
 
 
@@ -62,7 +62,6 @@ function App() {
                 </button>
             </div>  </SplashScreen>
     }
-
 
 }
 
@@ -131,10 +130,7 @@ function validate1(finalValidation, showinputValidate) {
 
 }
 
-
-
-
-function Login({ _setUser,className,rememberMe }) {
+function Login({ _setUser,className }) {
 
     const validatRef = useRef(false)
     const [auth, setAuth] = useState({ userName: "", password: "", validate, validate1 })
@@ -153,33 +149,35 @@ function Login({ _setUser,className,rememberMe }) {
 
     
     
-    return <form className={'size-100 shadow-2xl rounded-2xl flex flex-col items-center gap-2 '+className}>
-        <p className='w-full text-4xl text-center pt-5'>Login</p>
+    return  <form className={'w-100 shadow-2xl rounded-2xl flex flex-col items-center gap-2 '+className}>
+                <p className='text-red-500 self-end mr-5 p-2'>* Required Fields</p>
+        <p className='w-full text-4xl text-center pt-0'>Login</p>
+        <p className='text-center text-gray-500'>Please Enter Your UserName And Password</p>
 
         {/*User Name*/}
-        <div>
-        <label className='flex items-center gap-2 p-2'> UserName <input placeholder='Enter user Name' autoFocus tabIndex={0} type="text" value={auth.userName} onChange={(name) => {
+        
+        <label className='flex items-center gap-2 p-2'> <span>*</span> UserName <input placeholder='Enter user Name' autoFocus tabIndex={0} type="text" value={auth.userName} onChange={(name) => {
             let _auth = { ...auth, userName: name.target.value }
             if (!_auth.validate()[0]) setAuth(_auth)
         }
 
         } className='pl-5 py-2 text-xl border-2 border-gray-300  focus:outline-cyan-400' /> </label>
-        <p className='text-red-400'>{auth.validate1(undefined, validatRef.current)[0] || ''}</p>
-        </div>
+        <p className='text-red-400 mb-5'>{auth.validate1(undefined, validatRef.current)[0] || ''}</p>
+        
 
         {/*Password*/}
      
-        <label className='flex items-center gap-2'> Password <input type="password" placeholder='Enter Password'  value={auth.password} onChange={(pas) => {
+        <label className='flex items-center gap-2'><span>*</span> Password <input type="password" placeholder='Enter Password'  value={auth.password} onChange={(pas) => {
             let _auth = { ...auth, password: pas.target.value }
             if (!_auth.validate()[1]) setAuth(_auth)
 
         }} className='pl-5 py-2 text-xl border-2 border-gray-300  focus:outline-cyan-400' onCopy={(e) => e.preventDefault()}
             onCut={(e) => e.preventDefault()} onPaste={(e) => { e.preventDefault() }} /> </label>
-        <p className='text-red-400'>{auth.validate1(useEffect, validatRef.current)[1] || ''}</p>
+        <p className='text-red-400 ml-5'>{auth.validate1(useEffect, validatRef.current)[1] || ''}</p>
 
-        <div className='flex w-[90%] justify-end'>
-        <button type='button' tabIndex={(inputValidate(auth))?-1:0 }  onClick={clearFields} className=" bg-cyan-400 rounded-xl text-2xl self-end mr-5 mb-5 mt-auto p-2" disabled={inputFieldAnyNotEmpty(auth)} >Clear</button>   
-        <button type='button' tabIndex={(!validatRef.current||inputValidate(auth))?0:-1 }  className=" bg-cyan-400 rounded-xl text-2xl self-end mr-5 mb-5 mt-auto p-2" onClick={() => {
+        <div className='flex w-full  justify-end scale-95'>
+        <button type='button' tabIndex={(inputValidate(auth))?-1:0 }  onClick={clearFields} className=" bg-cyan-400 rounded-md text-xl self-end mr-5 mb-5 mt-auto py-2 px-5" disabled={inputFieldAnyNotEmpty(auth)} >Clear</button>   
+        <button type='button' tabIndex={(!validatRef.current||inputValidate(auth))?0:-1 }  className=" bg-cyan-400 rounded-md text-xl self-end mr-5 mb-5 mt-auto py-2 px-4" onClick={() => {
             validatRef.current = true
         
     
@@ -232,12 +230,10 @@ function Login({ _setUser,className,rememberMe }) {
                 ...prevAuth,
             }));
         
-
-
         }} disabled={validatRef.current&&!inputValidate(auth)}>Submit</button></div>
        
 
-      <div className='flex h-10 w-full justify-around items-center'><button onClick={()=>alert("Please Contact +91 6382174793")}>Forgot Password</button> <label className='  mr-5'>Remember Me <input type="checkbox" onChange={(e)=>setRememberMe(e.currentTarget.value)} value={_rememberMe} /></label></div>
+      <div className='flex h-10 w-full px-3 mb-5 justify-between items-center'><button onClick={()=>alert("Please Contact +91 6382174793")}>Forgot Password</button> <label className='  mr-5'>Remember Me <input type="checkbox" onChange={(e)=>setRememberMe(e.currentTarget.value)} value={_rememberMe} /></label></div>
 
 
     </form>
