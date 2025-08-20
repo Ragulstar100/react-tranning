@@ -1,4 +1,4 @@
-import React, { use, useEffect, useRef, useState } from 'react'
+import React, { use, useCallback, useEffect, useRef, useState } from 'react'
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import SplashScreen from './splash'
@@ -54,14 +54,13 @@ function App() {
 
     const [auth, setAuth] = useState(getUser() || getSessionUser())
 
-
     if (!auth) {
         return <div className='flex flex-col w-screen h-full'><p className=' text-center w-full py-5 '>Welcome My Game Analystics Website</p> <Login className="text-center   m-auto" _setUser={(auth) => {
             setAuth(auth)
         }} /></div>
 
     } else {
-        return <SplashScreen>
+        return <SplashScreen >
 
             <div className='w-screen self-start p-5 flex justify-between items-center'>
                 <p className=''>Welcome {auth.userName}</p>
@@ -87,13 +86,13 @@ function validate() {
 
 
     if (!andFunction(isMatch(/^(?!_).*/),orFunction(isMatch(userNameRegex), isMatch(userNameRegex1)))(userName)) {
-        validateArray[0] = "Not valid";
-    } else if (userName.length > 20) {
+        validateArray[0] = "UserName Should Start With A-Z, a-z, 0-9 And Can Contain _ But Not At The End Or Start";
+    } else if (userName&&userName.length > 20) {
         validateArray[0] = "Length Exceed UserName";
     }
 
 
-    if ((password||"").length > 10) {
+    if (password&&password.length > 10) {
         validateArray[1] = "Length Exceed Password"
     }
 
@@ -104,14 +103,12 @@ function validate() {
 }
 
 
-function validate1(finalValidation, showinputValidate) {
+function validate1( showinputValidate) {
+
 
     const { userName, password } = this
     const validateArray = new Array(Object.keys(this).length)
 
-    // if(showinputValidate(auth)Error===undefined) {
-    //     throw "Enter showinputValidate(auth)Error"
-    // }
 
 
     if (showinputValidate) {
@@ -119,40 +116,42 @@ function validate1(finalValidation, showinputValidate) {
         if (isBlank(userName)) {
             validateArray[0] = "User Name Is Empty"
         } else if (isMatch(userNameRegex1)(userName)) {
-            validateArray[0] = " should add word behind _"
+            validateArray[0] = "User Name Should Not End With _"
         }
 
         //Password Validate
         if (isBlank(password)) {
             validateArray[1] = "Your Password Is Empty"
         }
-
-        //Final Validate
-        
-        let userCheck = (user) => user.userName == userName && user.password == password
-        
-
-        fetch("/auth.json").then(res => res.json()).then((userList) => {
-
-            if (finalValidation) {
-                if (!R.find( userCheck,userList)) {
-                    finalValidation("User Name Or PassWord Invalid")
-                } else {
-                    finalValidation(undefined)
-                }
-            }
-        }
-        ).catch((error) => { throw error })
-
     }
 
     return validateArray
 
 }
 
+function finalValidation(_user,validate){
+
+        let userCheck = (user) => user.userName == _user.userName && user.password == _user.password
+        
+
+
+        fetch("/auth.json").then(res => res.json()).then((userList) => {
+
+        
+            if (!R.find( userCheck,userList)) {
+                    validate("User Name Or PassWord Invalid")
+                } else { 
+                    validate(undefined)
+                }
+        }
+        ).catch((error) => { throw error })
+
+}
+
+
 function Login({ _setUser, className }) {
 
-    const validatRef = useRef(false)
+   
     const [auth, setAuth] = useState({ userName:undefined, password:undefined, validate, validate1 })
 
     const [_rememberMe, setRememberMe] = useState(false)
@@ -163,17 +162,34 @@ function Login({ _setUser, className }) {
         })
     }
 
-    const inputValidate = (_auth) => { return _auth.validate1(undefined, true).filter((e) => e).length == 0 }
+    const inputValidate = (_auth) =>  _auth.validate1(true).filter((e)=>e).length == 0 
 
-    const inputFieldAnyNotEmpty = (_auth) => !(isBlank(_auth.userName) || isBlank(_auth.password))
+
+
+    const inputFieldAnyEmpty = (_auth) => isBlank(_auth.userName) && isBlank(_auth.password)
+
+    const handleForgotPassword = () =>  alert("Please contact support for password recovery: +91 6382174793");
+    
+    useEffect(() => {
+        window.addEventListener('resize', function() {
+            if (window.innerWidth < 600) {
+                document.querySelector('.login-form-container').classList.add('mobile');
+            } else {
+                document.querySelector('.login-form-container').classList.remove('mobile');
+            }
+        });
+    },[]) 
+
 
     const submit=()=>{
-                        validatRef.current = true
+                    
 
 
                 if (inputValidate(auth)) {
-                    auth.validate1((value) => {
 
+                    finalValidation(auth,(isNotFinsh) => {
+                     
+                        
 
                         let loginDataRaw = getLoginData(auth);
                         let loginData = loginDataRaw ? JSON.parse(loginDataRaw) : { userName: auth.userName, time: Date.now(), nuperOfLoginAttempt: 0 };
@@ -186,8 +202,8 @@ function Login({ _setUser, className }) {
 
 
                         if (loginData.nuperOfLoginAttempt < nuperOfLoginAttemptTotal) {
-                            if (value) {
-                                alert(value + " nuperOfLoginAttempt only " + (nuperOfLoginAttemptTotal - 1 - loginData.nuperOfLoginAttempt));
+                            if (isNotFinsh) {
+                                alert(isNotFinsh + " nuperOfLoginAttempt only " + (nuperOfLoginAttemptTotal - 1 - loginData.nuperOfLoginAttempt));
                                 loginData.nuperOfLoginAttempt = (loginData.nuperOfLoginAttempt || 0) + 1;
                                 loginData.time = Date.now();
                                 setLoginData(loginData);
@@ -210,8 +226,9 @@ function Login({ _setUser, className }) {
                             const formattedDate = `${String(nextDay.getDate()).padStart(2, '0')}/${String(nextDay.getMonth() + 1).padStart(2, '0')}/${nextDay.getFullYear()} at ${String(nextDay.getHours()).padStart(2, '0')}:${String(nextDay.getMinutes()).padStart(2, '0')}`;
                             alert(`${loginData.userName} have exceeded the maximum number of login attempts. Please try again ${formattedDate}.`);
                         }
+                    }
 
-                    }, validatRef.current)
+                    )
 
                 }
 
@@ -220,54 +237,81 @@ function Login({ _setUser, className }) {
                 }));
     }
 
-    useEffect(() => {
-        validatRef.current = true;
-    },[auth.userName, auth.password])
 
+    return (
+        <form className={`login-form-container ${className}`}>
+            <h1 className="login-heading">Login</h1>
+            <p className="login-subheading">Please Enter Your Username And Password</p>
 
+            <label className="login-input-label">
+                Username
+                <input
+                    placeholder='Enter username'
+                    autoFocus
+                    tabIndex={0}
+                    type="text"
+                    value={auth.userName || ""}
+                    onChange={(e) => {
+                        let _auth = { ...auth, userName: e.target.value };
+                        if (_auth.validate && !_auth.validate()[0]) {
+                            setAuth(_auth);
+                        }
+                    }}
+                    className="login-input-field"
+                />
+            </label>
+            <p className="login-error-text">{auth.validate1(R.isNotNil(auth.userName))[0]||"1.UserName Should Start With A-Z, a-z, 0-9 \n 2.Can Contain _ But Not At The End Or Start \n 3.Special Characters Not Allowed"}</p>
 
-    return <form className={'w-100 shadow-2xl rounded-2xl flex flex-col items-center gap-2 ' + className}>
-        {/* <button onClick={()=>window.close()}>Close this window</button> */}
+            <label className='login-input-label'>
+                 Password
+                <input
+                    type="password"
+                    placeholder='Enter password'
+                    value={auth.password || ""}
+                    onChange={(e) => {
+                        let _auth = { ...auth, password: e.target.value };
+                        if (_auth.validate && !_auth.validate()[1]) {
+                            setAuth(_auth);
+                        }
+                    }}
+                    className="login-input-field"
+                    onCopy={(e) => e.preventDefault()}
+                    onCut={(e) => e.preventDefault()}
+                    onPaste={(e) => e.preventDefault()}
+                />
+            </label>
+            <p className='login-error-text password'>{auth.validate1(R.isNotNil(auth.password))[1]||"You Have Only Three Attempts"}</p>
 
-        {/* <p className='text-red-500 self-end mr-5 p-2'>* Required Fields</p> */}
-        <h1 className='w-full text-4xl text-center pt-0'>Login</h1>
-        <p className='text-center text-gray-500'>Please Enter Your UserName And Password</p>
+            <div className="login-button-group">
+                <button
+                    type='button'
+                    tabIndex={inputValidate(auth) ? -1 : 0}
+                    onClick={clearFields}
+                    className="login-button login-clear-button"
+                    disabled={inputFieldAnyEmpty(auth)}
+                >
+                    Clear
+                </button>
+                <button
+                    type='submit'
+                    tabIndex={!inputValidate(auth) ? 0 : -1}
+                    className="login-button login-submit-button"
+                    onClick={(event) => { submit();event.preventDefault(); }}
+                    disabled={!inputValidate(auth)}
+                >
+                    Submit
+                </button>
+            </div>
 
-        {/*User Name*/}
-        <label className='flex items-center gap-2 p-2'> <span>*</span> UserName <input placeholder='Enter user Name' autoFocus tabIndex={0} type="text" value={auth.userName||""} onChange={(name) => {
-            
-            let _auth = { ...auth, userName: name.target.value }
-            if (!_auth.validate()[0]){setAuth(_auth) }
-        }
-
-        } className='pl-5 py-2 text-xl border-2 border-gray-300  focus:outline-cyan-400' /> </label>
-        <p className='text-red-400 mb-5'>{auth.validate1(undefined, validatRef.current&&R.isNotNil(auth.userName))[0] || ''}</p>
-
-        {/* <ToolTip content={<p className='bg-cyan-200 p-2 rounded-md'>Enter UserName AlbhaNumeric Like "Ragul","Hello_World","Welcome_for_all Here"</p>} ><FontAwesomeIcon icon={faCircleInfo} /></ToolTip> */}
-
-        {/*Password*/}
-
-        <label className='flex items-center gap-2'><span>*</span> Password <input type="password" placeholder='Enter Password' value={auth.password||""} onChange={(pas) => {
-            let _auth = { ...auth, password: pas.target.value }
-            if (!_auth.validate()[1]) setAuth(_auth)
-
-        }} className='pl-5 py-2 text-xl border-2 border-gray-300  focus:outline-cyan-400' onCopy={(e) => e.preventDefault()}
-            onCut={(e) => e.preventDefault()} onPaste={(e) => { e.preventDefault() }} />  </label>
-        <p className='text-red-400 ml-5'>{auth.validate1(useEffect, validatRef.current&&R.isNotNil(auth.userName))[1] || ''}</p>
-
-        {/* <ToolTip content={<p className='bg-cyan-200 p-2 rounded-md w-75'>Can Allowed password Enter 3 attempt Wrong per Minute</p>} ><FontAwesomeIcon icon={faCircleInfo} /></ToolTip> */}
-
-        <div className='flex w-full  justify-end scale-95'>
-            <button type='button' tabIndex={(inputValidate(auth)) ? -1 : 0} onClick={clearFields} className=" bg-cyan-400 rounded-md text-xl self-end mr-5 mb-5 mt-auto py-2 px-5" disabled={inputFieldAnyNotEmpty(auth)} >Clear</button>
-            <button type='submit' tabIndex={(!validatRef.current || inputValidate(auth)) ? 0 : -1} className=" bg-cyan-400 rounded-md text-xl self-end mr-5 mb-5 mt-auto py-2 px-4" onClick={() => {
-                submit()
-              }} disabled={validatRef.current && !inputValidate(auth)}>Submit</button></div>
-
-
-        <div className='flex h-10 w-full px-3 mb-5 justify-between items-center'><button onClick={() => alert("Please Contact +91 6382174793")}>Forgot Password</button> <label className='  mr-5'>Remember Me <input type="checkbox" onChange={(e) => setRememberMe(e.currentTarget.value)} value={_rememberMe} /></label></div>
-
-
-    </form>
+            <div className="login-forgot-remember">
+                <button type="button" onClick={handleForgotPassword}>Forgot Password</button>
+                <label className='mr-5'>
+                    Remember Me
+                    <input type="checkbox" onChange={(e) => setRememberMe(e.currentTarget.checked)} checked={_rememberMe} />
+                </label>
+            </div>
+        </form>
+    );
 }
 
 export default App

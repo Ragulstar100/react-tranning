@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 
 export default function SplashScreen({children}){
 const [time,setTime] = useState(0)
-
   useEffect(() => {
     //Dont use t++ use t+1 reson onUpdate
   const interval=setInterval(() => setTime((t) =>t+1), 1000)
@@ -14,6 +13,7 @@ const [time,setTime] = useState(0)
 
 
   if(time>10){
+  
     return <>{children}</>
   }
 
