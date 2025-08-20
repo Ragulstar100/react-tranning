@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { use, useEffect, useRef, useState } from 'react'
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import SplashScreen from './splash'
@@ -85,6 +85,7 @@ function validate() {
     const { userName, password } = this
     const validateArray = new Array(Object.keys(this).length)
 
+
     if (!andFunction(isMatch(/^(?!_).*/),orFunction(isMatch(userNameRegex), isMatch(userNameRegex1)))(userName)) {
         validateArray[0] = "Not valid";
     } else if (userName.length > 20) {
@@ -92,9 +93,11 @@ function validate() {
     }
 
 
-    if (password.length > 10) {
+    if ((password||"").length > 10) {
         validateArray[1] = "Length Exceed Password"
     }
+
+    
 
     return validateArray
 
@@ -150,7 +153,7 @@ function validate1(finalValidation, showinputValidate) {
 function Login({ _setUser, className }) {
 
     const validatRef = useRef(false)
-    const [auth, setAuth] = useState({ userName: "", password: "", validate, validate1 })
+    const [auth, setAuth] = useState({ userName:undefined, password:undefined, validate, validate1 })
 
     const [_rememberMe, setRememberMe] = useState(false)
 
@@ -162,42 +165,10 @@ function Login({ _setUser, className }) {
 
     const inputValidate = (_auth) => { return _auth.validate1(undefined, true).filter((e) => e).length == 0 }
 
-    const inputFieldAnyNotEmpty = (_auth) => !(_auth.userName.trim() || _auth.password.trim())
+    const inputFieldAnyNotEmpty = (_auth) => !(isBlank(_auth.userName) || isBlank(_auth.password))
 
-
-
-    return <form className={'w-100 shadow-2xl rounded-2xl flex flex-col items-center gap-2 ' + className}>
-        {/* <button onClick={()=>window.close()}>Close this window</button> */}
-
-        <p className='text-red-500 self-end mr-5 p-2'>* Required Fields</p>
-        <p className='w-full text-4xl text-center pt-0'>Login</p>
-        <p className='text-center text-gray-500'>Please Enter Your UserName And Password</p>
-
-        {/*User Name*/}
-        <label className='flex items-center gap-2 p-2'> <span>*</span> UserName <input placeholder='Enter user Name' autoFocus tabIndex={0} type="text" value={auth.userName} onChange={(name) => {
-            let _auth = { ...auth, userName: name.target.value }
-            if (!_auth.validate()[0]) setAuth(_auth)
-        }
-
-        } className='pl-5 py-2 text-xl border-2 border-gray-300  focus:outline-cyan-400' /><ToolTip content={<p className='bg-cyan-200 p-2 rounded-md'>Enter UserName AlbhaNumeric Like "Ragul","Hello_World","Welcome_for_all Here"</p>} ><FontAwesomeIcon icon={faCircleInfo} /></ToolTip> </label>
-        <p className='text-red-400 mb-5'>{auth.validate1(undefined, validatRef.current)[0] || ''}</p>
-
-
-
-        {/*Password*/}
-
-        <label className='flex items-center gap-2'><span>*</span> Password <input type="password" placeholder='Enter Password' value={auth.password} onChange={(pas) => {
-            let _auth = { ...auth, password: pas.target.value }
-            if (!_auth.validate()[1]) setAuth(_auth)
-
-        }} className='pl-5 py-2 text-xl border-2 border-gray-300  focus:outline-cyan-400' onCopy={(e) => e.preventDefault()}
-            onCut={(e) => e.preventDefault()} onPaste={(e) => { e.preventDefault() }} /> <ToolTip content={<p className='bg-cyan-200 p-2 rounded-md w-75'>Can Allowed password Enter 3 attempt Wrong per Minute</p>} ><FontAwesomeIcon icon={faCircleInfo} /></ToolTip> </label>
-        <p className='text-red-400 ml-5'>{auth.validate1(useEffect, validatRef.current)[1] || ''}</p>
-
-        <div className='flex w-full  justify-end scale-95'>
-            <button type='button' tabIndex={(inputValidate(auth)) ? -1 : 0} onClick={clearFields} className=" bg-cyan-400 rounded-md text-xl self-end mr-5 mb-5 mt-auto py-2 px-5" disabled={inputFieldAnyNotEmpty(auth)} >Clear</button>
-            <button type='button' tabIndex={(!validatRef.current || inputValidate(auth)) ? 0 : -1} className=" bg-cyan-400 rounded-md text-xl self-end mr-5 mb-5 mt-auto py-2 px-4" onClick={() => {
-                validatRef.current = true
+    const submit=()=>{
+                        validatRef.current = true
 
 
                 if (inputValidate(auth)) {
@@ -247,8 +218,50 @@ function Login({ _setUser, className }) {
                 setAuth(prevAuth => ({
                     ...prevAuth,
                 }));
+    }
 
-            }} disabled={validatRef.current && !inputValidate(auth)}>Submit</button></div>
+    useEffect(() => {
+        validatRef.current = true;
+    },[auth.userName, auth.password])
+
+
+
+    return <form className={'w-100 shadow-2xl rounded-2xl flex flex-col items-center gap-2 ' + className}>
+        {/* <button onClick={()=>window.close()}>Close this window</button> */}
+
+        {/* <p className='text-red-500 self-end mr-5 p-2'>* Required Fields</p> */}
+        <h1 className='w-full text-4xl text-center pt-0'>Login</h1>
+        <p className='text-center text-gray-500'>Please Enter Your UserName And Password</p>
+
+        {/*User Name*/}
+        <label className='flex items-center gap-2 p-2'> <span>*</span> UserName <input placeholder='Enter user Name' autoFocus tabIndex={0} type="text" value={auth.userName||""} onChange={(name) => {
+            
+            let _auth = { ...auth, userName: name.target.value }
+            if (!_auth.validate()[0]){setAuth(_auth) }
+        }
+
+        } className='pl-5 py-2 text-xl border-2 border-gray-300  focus:outline-cyan-400' /> </label>
+        <p className='text-red-400 mb-5'>{auth.validate1(undefined, validatRef.current&&R.isNotNil(auth.userName))[0] || ''}</p>
+
+        {/* <ToolTip content={<p className='bg-cyan-200 p-2 rounded-md'>Enter UserName AlbhaNumeric Like "Ragul","Hello_World","Welcome_for_all Here"</p>} ><FontAwesomeIcon icon={faCircleInfo} /></ToolTip> */}
+
+        {/*Password*/}
+
+        <label className='flex items-center gap-2'><span>*</span> Password <input type="password" placeholder='Enter Password' value={auth.password||""} onChange={(pas) => {
+            let _auth = { ...auth, password: pas.target.value }
+            if (!_auth.validate()[1]) setAuth(_auth)
+
+        }} className='pl-5 py-2 text-xl border-2 border-gray-300  focus:outline-cyan-400' onCopy={(e) => e.preventDefault()}
+            onCut={(e) => e.preventDefault()} onPaste={(e) => { e.preventDefault() }} />  </label>
+        <p className='text-red-400 ml-5'>{auth.validate1(useEffect, validatRef.current&&R.isNotNil(auth.userName))[1] || ''}</p>
+
+        {/* <ToolTip content={<p className='bg-cyan-200 p-2 rounded-md w-75'>Can Allowed password Enter 3 attempt Wrong per Minute</p>} ><FontAwesomeIcon icon={faCircleInfo} /></ToolTip> */}
+
+        <div className='flex w-full  justify-end scale-95'>
+            <button type='button' tabIndex={(inputValidate(auth)) ? -1 : 0} onClick={clearFields} className=" bg-cyan-400 rounded-md text-xl self-end mr-5 mb-5 mt-auto py-2 px-5" disabled={inputFieldAnyNotEmpty(auth)} >Clear</button>
+            <button type='submit' tabIndex={(!validatRef.current || inputValidate(auth)) ? 0 : -1} className=" bg-cyan-400 rounded-md text-xl self-end mr-5 mb-5 mt-auto py-2 px-4" onClick={() => {
+                submit()
+              }} disabled={validatRef.current && !inputValidate(auth)}>Submit</button></div>
 
 
         <div className='flex h-10 w-full px-3 mb-5 justify-between items-center'><button onClick={() => alert("Please Contact +91 6382174793")}>Forgot Password</button> <label className='  mr-5'>Remember Me <input type="checkbox" onChange={(e) => setRememberMe(e.currentTarget.value)} value={_rememberMe} /></label></div>
