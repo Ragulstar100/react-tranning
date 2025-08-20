@@ -2,6 +2,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import SplashScreen from './splash'
+import ToolTip from './tooltip'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import RFocusTrap from './FocusTrap'
+
+
+
 
 
 const setUser = (user) => localStorage.setItem("user", JSON.stringify(user))
@@ -149,20 +157,20 @@ function Login({ _setUser,className }) {
 
     
     
-    return  <form className={'w-100 shadow-2xl rounded-2xl flex flex-col items-center gap-2 '+className}>
+    return<RFocusTrap> <form className={'w-100 shadow-2xl rounded-2xl flex flex-col items-center gap-2 '+className}>
                 <p className='text-red-500 self-end mr-5 p-2'>* Required Fields</p>
         <p className='w-full text-4xl text-center pt-0'>Login</p>
         <p className='text-center text-gray-500'>Please Enter Your UserName And Password</p>
 
         {/*User Name*/}
-        
         <label className='flex items-center gap-2 p-2'> <span>*</span> UserName <input placeholder='Enter user Name' autoFocus tabIndex={0} type="text" value={auth.userName} onChange={(name) => {
             let _auth = { ...auth, userName: name.target.value }
             if (!_auth.validate()[0]) setAuth(_auth)
         }
 
-        } className='pl-5 py-2 text-xl border-2 border-gray-300  focus:outline-cyan-400' /> </label>
+        } className='pl-5 py-2 text-xl border-2 border-gray-300  focus:outline-cyan-400' /><ToolTip content={<p className='bg-cyan-200 p-2 rounded-md'>Enter UserName AlbhaNumeric Like "Ragul","Hello_World","Welcome_for_all Here"</p>} ><FontAwesomeIcon icon={faCircleInfo} /></ToolTip> </label>
         <p className='text-red-400 mb-5'>{auth.validate1(undefined, validatRef.current)[0] || ''}</p>
+        
         
 
         {/*Password*/}
@@ -172,7 +180,7 @@ function Login({ _setUser,className }) {
             if (!_auth.validate()[1]) setAuth(_auth)
 
         }} className='pl-5 py-2 text-xl border-2 border-gray-300  focus:outline-cyan-400' onCopy={(e) => e.preventDefault()}
-            onCut={(e) => e.preventDefault()} onPaste={(e) => { e.preventDefault() }} /> </label>
+            onCut={(e) => e.preventDefault()} onPaste={(e) => { e.preventDefault() }} /> <ToolTip content={<p className='bg-cyan-200 p-2 rounded-md w-75'>Can Allowed password Enter 3 attempt Wrong per Minute</p>} ><FontAwesomeIcon icon={faCircleInfo} /></ToolTip> </label>
         <p className='text-red-400 ml-5'>{auth.validate1(useEffect, validatRef.current)[1] || ''}</p>
 
         <div className='flex w-full  justify-end scale-95'>
@@ -236,7 +244,7 @@ function Login({ _setUser,className }) {
       <div className='flex h-10 w-full px-3 mb-5 justify-between items-center'><button onClick={()=>alert("Please Contact +91 6382174793")}>Forgot Password</button> <label className='  mr-5'>Remember Me <input type="checkbox" onChange={(e)=>setRememberMe(e.currentTarget.value)} value={_rememberMe} /></label></div>
 
 
-    </form>
+    </form></RFocusTrap>
 }
 
 export default App
