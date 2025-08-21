@@ -1,52 +1,14 @@
-import React, { use, useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './App.css'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import SplashScreen from './splash'
-import ToolTip from './tooltip'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
+
 import * as R from 'ramda'
 
 
+import { getSessionUser, setSessionUser, removeSessionUser,getUser,setUser,removeUser,setLoginData,getLoginData } from './sessionHandler'
 
-
-//If checked remember me then user will be stored in localStorage
-const setUser = (user) => localStorage.setItem("user", JSON.stringify(user))
-
-const getUser = () => JSON.parse(localStorage.getItem("user"))
-
-const removeUser = () => localStorage.removeItem("user")
-
-//If not checked remember me then user will be stored in sessionStorage
-const setSessionUser = (user) => sessionStorage.setItem("users", JSON.stringify(user))
-
-const getSessionUser = () => JSON.parse(sessionStorage.getItem("users"))
-
-const removeSessionUser = () => sessionStorage.removeItem("users")
-
-//Saves numper of login attempts and time of last login
-const setLoginData = (data) => localStorage.setItem("loginData" + data.userName, JSON.stringify(data));
-
-const getLoginData = (data) => localStorage.getItem("loginData" + data.userName) ? localStorage.getItem("loginData" + data.userName) : null;
+import { orFunction, andFunction, isBlank, isNotBlank, isMatch } from './ramadaFunctions'
 
 //const removeLoginData = (data) => localStorage.removeItem("loginData" + data.userName);
-
-
-let orFunction = (...f) => (value) => f.reduce((acc, curr) => acc || curr(value), false);
-
-let andFunction = (...f) => (value) => f.reduce((acc, curr) => acc && curr(value), true);
-
-//Check if a value is blank (null or empty)
-let isBlank= orFunction(R.isNil, R.isEmpty);
-
-let isNotBlank = (value) => !isBlank(value);
-
-//Check Regex Match
-let isMatch = (regex) =>(value)=>regex.test(value);
-
-let isNotMatch = (regex) =>(value)=>!regex.test(value);
-
 
 
 
@@ -55,14 +17,13 @@ function App() {
     const [auth, setAuth] = useState(getUser() || getSessionUser())
 
     if (!auth) {
-        return <div className='flex flex-col w-screen h-full'><p className=' text-center w-full py-5 '>Welcome My Game Analystics Website</p> <Login className="text-center   m-auto" _setUser={(auth) => {
+        return <div className='flex flex-col w-screen h-full'><p className=' text-center w-full py-5 '>Welcome gaming analytics</p> <Login className="text-center   m-auto" _setUser={(auth) => {
             setAuth(auth)
         }} /></div>
 
     } else {
-        return <SplashScreen >
 
-            <div className='w-screen self-start p-5 flex justify-between items-center'>
+        return  <div className='w-screen self-start p-5 flex justify-between items-center'>
                 <p className=''>Welcome {auth.userName}</p>
                 <button type='button' onClick={() => {
                     removeUser()
@@ -71,10 +32,11 @@ function App() {
                 }}>
                     LogOut
                 </button>
-            </div>  </SplashScreen>
+                 </div> 
     }
 
 }
+
 
 const userNameRegex = /^[A-Za-z0-9]*(_[A-Za-z0-9]+)*$/;
 const userNameRegex1 = /^[A-Za-z0-9]*(_[A-Za-z0-9]+)*_$/;
@@ -86,7 +48,7 @@ function validate() {
 
 
     if (!andFunction(isMatch(/^(?!_).*/),orFunction(isMatch(userNameRegex), isMatch(userNameRegex1)))(userName)) {
-        validateArray[0] = "UserName Should Start With A-Z, a-z, 0-9 And Can Contain _ But Not At The End Or Start";
+        validateArray[0] = "1.UserName Should Start With A-Z, a-z, 0-9 \n 2.Can Contain _ But Not At The End Or Start \n 3.Special Characters Not Allowed";
     } else if (userName&&userName.length > 20) {
         validateArray[0] = "Length Exceed UserName";
     }
@@ -95,6 +57,7 @@ function validate() {
     if (password&&password.length > 10) {
         validateArray[1] = "Length Exceed Password"
     }
+
 
     
 
@@ -135,7 +98,7 @@ function finalValidation(_user,validate){
         
 
 
-        fetch("/auth.json").then(res => res.json()).then((userList) => {
+        fetch("private/auth.json").then(res => res.json()).then((userList) => {
 
         
             if (!R.find( userCheck,userList)) {
@@ -148,11 +111,11 @@ function finalValidation(_user,validate){
 
 }
 
-
 function Login({ _setUser, className }) {
 
-   
-    const [auth, setAuth] = useState({ userName:undefined, password:undefined, validate, validate1 })
+
+    const [auth, setAuth] = useState({ userName:undefined, password:undefined, validate, validate1})
+    const [authCache, setAuthCache] = useState({ userName: undefined, password: undefined, validate, validate1 })
 
     const [_rememberMe, setRememberMe] = useState(false)
 
@@ -164,27 +127,12 @@ function Login({ _setUser, className }) {
 
     const inputValidate = (_auth) =>  _auth.validate1(true).filter((e)=>e).length == 0 
 
-
-
     const inputFieldAnyEmpty = (_auth) => isBlank(_auth.userName) && isBlank(_auth.password)
 
     const handleForgotPassword = () =>  alert("Please contact support for password recovery: +91 6382174793");
     
-    useEffect(() => {
-        window.addEventListener('resize', function() {
-            if (window.innerWidth < 600) {
-                document.querySelector('.login-form-container').classList.add('mobile');
-            } else {
-                document.querySelector('.login-form-container').classList.remove('mobile');
-            }
-        });
-    },[]) 
-
-
     const submit=()=>{
                     
-
-
                 if (inputValidate(auth)) {
 
                     finalValidation(auth,(isNotFinsh) => {
@@ -238,54 +186,59 @@ function Login({ _setUser, className }) {
     }
 
 
+    useEffect(() => {
+        if ( !authCache.validate()[0]&&!authCache.validate()[1]) {
+                setAuth(authCache);
+         }  
+    }, [authCache.userName, authCache.password]);
+
     return (
-        <form className={`login-form-container ${className}`}>
+      <div>  <form className={`login-form-container ${className}`}>
             <h1 className="login-heading">Login</h1>
             <p className="login-subheading">Please Enter Your Username And Password</p>
 
-            <label className="login-input-label">
+            
+            <div className="textField ">
+            <label >
                 Username
-                <input
-                    placeholder='Enter username'
+            </label>
+                     <input placeholder='Enter username'
                     autoFocus
                     tabIndex={0}
                     type="text"
                     value={auth.userName || ""}
                     onChange={(e) => {
                         let _auth = { ...auth, userName: e.target.value };
-                        if (_auth.validate && !_auth.validate()[0]) {
-                            setAuth(_auth);
-                        }
-                    }}
-                    className="login-input-field"
-                />
-            </label>
-            <p className="login-error-text">{auth.validate1(R.isNotNil(auth.userName))[0]||"1.UserName Should Start With A-Z, a-z, 0-9 \n 2.Can Contain _ But Not At The End Or Start \n 3.Special Characters Not Allowed"}</p>
+                        setAuthCache(_auth);
 
-            <label className='login-input-label'>
-                 Password
+                    }}
+                    />
+                          
+            <p >{authCache.validate()[0]||auth.validate1(R.isNotNil(auth.userName))[0]}</p>
+            </div>        
+
+             <div className="textField">       
+            <label > Password </label>
                 <input
                     type="password"
                     placeholder='Enter password'
                     value={auth.password || ""}
                     onChange={(e) => {
                         let _auth = { ...auth, password: e.target.value };
-                        if (_auth.validate && !_auth.validate()[1]) {
-                            setAuth(_auth);
-                        }
+                        setAuthCache(_auth);
                     }}
-                    className="login-input-field"
                     onCopy={(e) => e.preventDefault()}
                     onCut={(e) => e.preventDefault()}
                     onPaste={(e) => e.preventDefault()}
                 />
-            </label>
-            <p className='login-error-text password'>{auth.validate1(R.isNotNil(auth.password))[1]||"You Have Only Three Attempts"}</p>
-
+                
+            <p >{auth.validate1(R.isNotNil(auth.password))[1]||(authCache.validate()[1])}</p>
+            </div>        
+            
             <div className="login-button-group">
                 <button
                     type='button'
-                    tabIndex={inputValidate(auth) ? -1 : 0}
+                    tabIndex={inputFieldAnyEmpty(auth) ? -1 : 0}
                     onClick={clearFields}
                     className="login-button login-clear-button"
                     disabled={inputFieldAnyEmpty(auth)}
@@ -294,7 +247,7 @@ function Login({ _setUser, className }) {
                 </button>
                 <button
                     type='submit'
-                    tabIndex={!inputValidate(auth) ? 0 : -1}
+                    tabIndex={inputValidate(auth) ? 0 : -1}
                     className="login-button login-submit-button"
                     onClick={(event) => { submit();event.preventDefault(); }}
                     disabled={!inputValidate(auth)}
@@ -305,12 +258,11 @@ function Login({ _setUser, className }) {
 
             <div className="login-forgot-remember">
                 <button type="button" onClick={handleForgotPassword}>Forgot Password</button>
-                <label className='mr-5'>
-                    Remember Me
+                <label className='mr-5'> Remember Me
                     <input type="checkbox" onChange={(e) => setRememberMe(e.currentTarget.checked)} checked={_rememberMe} />
                 </label>
             </div>
-        </form>
+        </form></div>
     );
 }
 
