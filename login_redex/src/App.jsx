@@ -14,7 +14,6 @@ const App = () => {
     dispatch(removeLocalUser())
     dispatch(removeSessionUser())
     dispatch(setUser(initialState))
-    setUser(initialState)
   }} />
   else return <> <Login getUser={(user) => { setUser(user); }} /></>
 
@@ -23,15 +22,10 @@ const App = () => {
 
 function Home({ user, logout }) {
 
-
-  return <div style={{ display: "flex", width: '100vw', height: '100%', padding: '20px', justifyContent: 'space-between' }}>
-    {user.userName}
-    <button type='submit' style={{ height: "20px" }} onClick={() => {
-      logout()
-    }}>
-      Logout
-    </button>
-  </div>
+return<> <div className='home'>
+   <label htmlFor=""> {user.userName} </label>
+    <button  style={{ height: "35px" }} onClick={() => { logout() }}> Logout </button>
+  </div> </>
 }
 
 

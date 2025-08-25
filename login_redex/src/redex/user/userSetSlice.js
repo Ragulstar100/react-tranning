@@ -90,7 +90,7 @@ function _restrict(state) {
 
 
     if (!andFunction(isMatch(/^(?!_).*/),orFunction(isMatch(userNameRegex), isMatch(userNameRegex1)))(userName)) {
-        validateArray.userName = "1.UserName Should Start With A-Z, a-z, 0-9 \n 2.Can Contain _ But Not At The End Or Start \n 3.Special Characters Not Allowed";
+        validateArray.userName = "Username must start with a letter or number, may contain underscores (not at the start or end), and cannot have special characters.";
     } else if (userName&&userName.length > 20) {
         validateArray.userName = "Length Exceed UserName";
     }

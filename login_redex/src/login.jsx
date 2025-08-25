@@ -19,6 +19,8 @@ export  default  function Login({getUser}) {
 
     const [rememberMe,setRememberMe] = useState(false)
 
+    const [msg,setMsg]=useState(undefined)
+
  
 
 
@@ -42,12 +44,17 @@ export  default  function Login({getUser}) {
         dispatch(validate())
     },[user.userName,user.password])
 
+    useEffect(()=>{
+        setTimeout(()=>setMsg(undefined),5000)
+    },[msg])
+
   
 
 
-    return <form className='login'>
+    return <div className='login'> <form >
         <h1>Login</h1>
-        <h2>Enter Your UserName And Password</h2>
+        <h4>Enter Your UserName And Password</h4>
+        <h5>{msg||""}</h5>
       
         <TextField 
         value={user.userName||''}
@@ -78,7 +85,7 @@ export  default  function Login({getUser}) {
                     dispatch(setSessionUser(user))
                 }
             }).catch((error)=>{
-                alert(error)
+                setMsg(error.message)
             })
             event.preventDefault()
 
@@ -87,15 +94,15 @@ export  default  function Login({getUser}) {
         <div className='footer'>
 
             <button type='button' onClick={()=>{
-            alert("Contact Admin +91 9876543210")
-            }}>Forget Password</button>
+            setMsg("Forgot Password:Contact Admin +91 9876543210")
+            }}>Forget Password?</button>
 
 
             <label >Remember Me <input type='checkbox' onChange={(e)=>{
                 setRememberMe(e.currentTarget.checked)
             }} /></label>
         </div>
-    </form>
+    </form></div>
 
 };
 
@@ -103,7 +110,7 @@ function TextField({value,onChange,label,placeholder,inlineValidation,inlineRest
   return <div className='textField'> 
     <label>{label}</label>
     <input type={type} onCopy={(e)=>{ if(type=='password') e.preventDefault() }} onCut={(e)=>{ if(type) e.preventDefault() }} onPaste={(e)=>{ if(type=='password') e.preventDefault() }} value={value} onChange={(e)=> {onChange(e.currentTarget.value)}} placeholder={placeholder} /> 
-    <button type="button" tabIndex={value?0:-1} disabled={!value} onClick={()=>{ onChange("")} }>X</button>
+    {/* <button type="button" tabIndex={value?0:-1} disabled={!value} onClick={()=>{ onChange("")} }>X</button> */}
     <p>{inlineValidation&&R.isNotNil(inlineValidation(value))?inlineValidation(value):"Empty Validation Function"}</p>
     <p>{inlineRestrtiction&&R.isNotNil(inlineRestrtiction(value))?inlineRestrtiction(value):"Empty Validation Function"}</p>
     </div>
