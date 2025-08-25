@@ -3,7 +3,7 @@ import { isBlank,isMatch,isNotMatch,andFunction,orFunction } from '../../ramadaF
 import { useEffect } from 'react';
 import { isNotEmpty } from 'ramda';
 
-const initialState = {
+export const initialState = {
   userName:undefined,
   password:undefined,
   error:{},
@@ -11,12 +11,14 @@ const initialState = {
   cache:undefined
 };
 
-
-
 const useSetSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
+    setUser: (state, action) => {
+      state.userName = action.payload.userName;
+      state.password = action.payload.password;
+    },
     setUsername: (state, action) => { 
      if(!_restrict({...state,userName:action.payload}).userName)   state.userName=action.payload 
      state.block=_restrict({...state,userName:action.payload})
@@ -31,9 +33,11 @@ const useSetSlice = createSlice({
     },
     validate:(state,action)=>{
         state.error=_validate(state,action)
-    },restrict:(state)=>{
+    },
+    restrict:(state)=>{
         state.block=_restrict(state)
-    },userNotEmpty:(state)=>{
+    },
+    userNotEmpty:(state)=>{
        return isNotEmpty(state.userName)||isNotEmpty(state.password)
     }
 
@@ -71,9 +75,7 @@ function _validate(state,showinputValidate) {
 
     }
 
-  
 
-   
 
 }
 
@@ -105,5 +107,5 @@ function _restrict(state) {
 
 }
 
-export const { setUsername, setPassword, clearUser,validate,restrict,userNotEmpty } = useSetSlice.actions;
+export const { setUsername, setPassword, clearUser,validate,restrict,userNotEmpty,setUser } = useSetSlice.actions;
 export default useSetSlice.reducer;

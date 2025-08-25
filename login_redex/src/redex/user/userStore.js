@@ -1,10 +1,6 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 import user from './userSetSlice.js';
-
-
-
-
-
+import userSession from './userSessionSlice.js';
 
 
 export function getLoginData(username, password) {
@@ -36,7 +32,8 @@ export function getLoginData(username, password) {
 
 export const userStore = configureStore({
   reducer: {
-    user
+    user,
+    userSession
   }
 });
 
