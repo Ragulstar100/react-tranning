@@ -1,0 +1,79 @@
+.login{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100vw;
+}
+
+button:disabled{
+  background-color: gray;
+}
+
+.end{
+  display: flex;
+  gap: 10px;
+  width:100%;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 10px;
+  margin-right: 10px;
+}
+
+
+.textField {
+    display: grid;
+    grid-template-columns: repeat(3); 
+    gap: 15px;
+    padding: 10px;
+    justify-items: center;
+  }
+  
+  .textField label {
+    grid-column: 1 ;
+    grid-row: 1;
+    align-content: center;
+  }
+  .textField input {
+      width: 100%;
+      padding: 0.5rem; 
+      font-size: 1.2rem;
+    grid-column: 2;
+    grid-row: 1;
+      border: 2px solid #d1d5db; 
+  }
+  
+  .textField input:focus {
+      outline: none; 
+      border-color: #22d3ee; 
+      border-width: 2px; 
+      transition: border-color 0.2s ease-in-out;
+  }
+  
+  .textField button {
+    grid-column: 3;
+    grid-row: 1;
+    padding: 0.5rem 1rem; 
+    /* background-color: #22d3ee;  */
+    color: black; 
+    border: none; 
+    border-radius: 0.375rem; 
+    cursor: pointer;
+  }
+  
+  .textField p {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+    color: #ef4444; 
+    width: 100%;
+    white-space: pre-wrap;
+    text-align: left;
+    line-height: 2;
+    margin-top: 0.5rem; 
+  }
+
+  .textField p:nth-last-of-type(1) {
+    grid-column: 2;
+    grid-row: 3;
+    color: #4480ef; 
+  }
