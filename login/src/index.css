@@ -1,0 +1,19 @@
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+#r{
+
+
+@apply w-screen h-screen   justify-center flex items-center !bg-white
+}
+
+button:disabled{
+    @apply bg-gray-300 text-gray-500 cursor-not-allowed
+}
+
+span{
+    @apply text-red-500 text-2xl
+}
+

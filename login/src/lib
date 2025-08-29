@@ -1,0 +1,6 @@
+npm install react-router-dom. - Craete Route React
+
+//fontawesome
+npm i --save @fortawesome/fontawesome-svg-core
+npm install --save @fortawesome/react-fontawesome @fortawesome/free-solid-svg-icons @fortawesome/free-brands-svg-icons
+

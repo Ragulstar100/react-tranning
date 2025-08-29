@@ -1,0 +1,162 @@
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  /* i will  change as Nunito sans*/
+  font-family: 'Courier New', Courier, monospace ;
+}
+
+#root{
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Courier New', Courier, monospace;
+  background: #22d3ee;
+} */
+
+.home{
+ display: flex;
+ width: 100vw; 
+ height: 100vh;
+ padding: 20px;
+ justify-content: space-between;
+}
+
+.login{
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    border: 2px #22d3ee solid;
+    border-radius:10px;
+    align-content: flex-start;
+    padding:20px;
+   gap: 10px;
+}
+
+.footer{
+  color: #4480ef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer button{
+  all:unset;
+  color: black;
+}
+
+h1{
+  text-align: start;
+ 
+}
+
+h4{
+  text-align: start;
+  margin-bottom: 20px;
+}
+
+h5{
+  text-align: start;
+  color: #ef4444;
+  margin-bottom: 20px;
+}
+
+button{
+  padding: 8px;;
+}
+
+
+
+/* button:disabled{
+opacity: 60%; 
+} */
+
+.actionBar{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+  padding:10px;
+  margin-bottom: 10px;
+}
+
+.actionBar button{
+  background: #4480ef;
+  border-radius: 4px;
+  color: white;
+  border: none;
+}
+
+.actionBar button:disabled{
+  background: lightgray;
+  cursor: pointer;
+}
+
+
+.textField {
+    display:flex;
+    flex-direction: column;
+    width: 100%;
+    justify-items: center;
+  }
+
+  .textField input::placeholder{
+    color: gray;
+    opacity: 0.3;
+    font-size: 0.9rem;
+  }
+
+  
+  .textField label {
+    width: 100%;
+  }
+  .textField input {
+      width: 80%;
+      padding: 0.6rem; 
+      font-size: 1.0rem;
+      border: 1px solid #d1d5db; 
+      border-radius: 8px;
+  }
+  
+  .textField input:focus {
+      outline: none; 
+      border-color: #22d3ee; 
+      border-width: 2px; 
+      transition: border-color 0.2s ease-in-out;
+  }
+  
+  .textField button {
+    padding: 0.5rem 1rem; 
+    /* background-color: #22d3ee;  */
+    color: black; 
+    border: none; 
+    border-radius: 0.375rem; 
+    cursor: pointer;
+  }
+  
+  .textField p {
+    justify-self: start;
+    color: #ef4444; 
+    width: 100%;
+    height: 20px;
+    white-space: pre-wrap;
+    text-align: left;
+    line-height: 2;
+    margin-top: 0.5rem; 
+    font-size: 0.8rem;
+  }
+
+  .textField p:nth-last-of-type(1) {
+    color: #4480ef; 
+    height:fit-content;
+  }
