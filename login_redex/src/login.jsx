@@ -50,8 +50,6 @@ export  default  function Login({getUser}) {
     },[msg])
 
   
-
-
     return <div className='login'> <form >
         <h1>Login</h1>
         <h4>Enter Your UserName And Password</h4>
@@ -59,7 +57,7 @@ export  default  function Login({getUser}) {
       
         <TextField 
         value={user.userName||''}
-         onChange={(value)=>dispatch(setUsername(value))}
+         onChange={(value)=>dispatch(R.mergeRight(setUsername(value),{flags:setUsername.type}))}
          label="User Name"
          placeholder="Enter Your UserName"
          inlineValidation={()=>user.error.userName||""}
@@ -68,7 +66,7 @@ export  default  function Login({getUser}) {
 
         <TextField 
          value={user.password||''}
-         onChange={(value)=>dispatch(setPassword(value))}
+         onChange={(value)=>dispatch(R.mergeRight(setPassword(value),{flags:'pass'}))}
          label="Password"
          placeholder="Enter Your Password"
          inlineValidation={()=>user.error.password||""}

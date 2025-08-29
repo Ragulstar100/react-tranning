@@ -12,8 +12,7 @@ export const userPreProcessMiddleWare=storeApi=>next=>action=>{
 
     let validate
     let blocks
-
-    switch(action.type){
+    switch(action.flags){
       case setUsername.type: 
          validate=(userRestrict({payload:action.payload,type:islengthmax20})||userRestrict({payload:action.payload,type:isAlphaNumericWith_}))
          blocks={...storeApi.getState().user.block,userName:validate}
@@ -24,7 +23,7 @@ export const userPreProcessMiddleWare=storeApi=>next=>action=>{
   
         break;
 
-      case setPassword.type:   
+      case "pass":   
          validate=(userRestrict({payload:action.payload,type:islengthmax10}))
          blocks={...storeApi.getState().user.block,password:validate}
          storeApi.dispatch(restrict(blocks))
