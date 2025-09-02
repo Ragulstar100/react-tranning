@@ -19,3 +19,16 @@ export let isZero= (value)=> value=='0'
 export let isNegative= (value)=> value<0
 
 export let isPostive= (value)=>value>0
+
+export function debounceByKey(fn, delay) {
+    const timers = {};
+    return (key, ...args) => {
+      if (timers[key]) {
+        clearTimeout(timers[key]); 
+      }
+      timers[key] = setTimeout(() => {
+      fn(...args);
+      delete timers[key];
+      }, delay);
+    };
+  }
