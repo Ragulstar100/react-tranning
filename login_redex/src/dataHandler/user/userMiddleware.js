@@ -78,10 +78,17 @@ const PRE_RULES = {
 
   const runValidation = (store, action, {  types, shouldBlock }) => {
     const validate = validator({ payload: action.payload, type: types });
-    const blocks = { ...store.getState().user[action], [action.type]: validate };
-    store.dispatch(shouldBlock?restrict(blocks):setError(blocks));
-    if (!shouldBlock || !validate) return true;
-    return false;
+    
+    if(shouldBlock){
+      const blocks = { ...store.getState().user.block, [action.type]: validate };
+      store.dispatch(restrict(blocks));
+    }else{
+      const blocks = { ...store.getState().user.error, [action.type]: validate };
+      store.dispatch(setError(blocks));
+      return true
+    }
+
+    return !validate;
   };
   
 
@@ -94,9 +101,10 @@ const PRE_RULES = {
     } else {
       next(action);
     }
+    
   };
   
-  // ✅ PostProcess Middleware
+
   export const userPostProcessMiddleWare = store => next => action => {
     const rule = POST_RULES[action.type];
     if (rule) runValidation(store, action, rule);
