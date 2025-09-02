@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import {  userNotValid,userEmpty, userRestrict,userValidate } from './userMiddleware';
+import {  userNotValid,userEmpty } from './userMiddleware';
 
 
 
@@ -30,6 +30,7 @@ const useSetSlice = createSlice({
     },
     setPassword: (state, action) => {
      state.password=action.payload 
+     state.block={...state.block,password:action.restrict}
     },
     clearUser: (state) => {
       state.userName = undefined;
@@ -39,6 +40,7 @@ const useSetSlice = createSlice({
         state.error=action.payload
     },
     restrict:(state,action)=>{
+ 
         state.block=action.payload
     }
 

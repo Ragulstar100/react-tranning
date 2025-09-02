@@ -57,20 +57,20 @@ export  default  function Login({getUser}) {
       
         <TextField 
         value={user.userName||''}
-         onChange={(value)=>dispatch(R.mergeRight(setUsername(value),{flags:setUsername.type}))}
+         onChange={(value)=>dispatch(setUsername(value))}
          label="User Name"
          placeholder="Enter Your UserName"
-         inlineValidation={()=>user.error.userName||""}
-         inlineRestrtiction={()=>user.block.userName||""}
+         inlineValidation={()=>user.error[setUsername.type]||""}
+         inlineRestrtiction={()=>user.block[setUsername.type]||""}
          />
 
         <TextField 
          value={user.password||''}
-         onChange={(value)=>dispatch(R.mergeRight(setPassword(value),{flags:'pass'}))}
+         onChange={(value)=>dispatch(setPassword(value))}
          label="Password"
          placeholder="Enter Your Password"
-         inlineValidation={()=>user.error.password||""}
-         inlineRestrtiction={()=>user.block.password||""}
+         inlineValidation={()=>user.error[setPassword.type]||""}
+         inlineRestrtiction={()=>user.block[setPassword.type]||""}
          type='password'
          />
 

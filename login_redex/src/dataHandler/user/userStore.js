@@ -31,17 +31,15 @@ export function getLoginData(username, password) {
   });
 }
 
-const trackActionMiddleware = storeAPI => next => action => {
-  const prevState = storeAPI.getState();      // state before action
-  const result = next(action);                // dispatch action
-  const nextState = storeAPI.getState(); 
- 
- 
-  const changedSlices = R.keys(  R.pickBy((val, key) => !R.equals(val, prevState[key]), nextState));
-  console.log(changedSlices); // ['user']
+// const trackActionMiddleware = storeAPI => next => action => {
+//   const prevState = storeAPI.getState();      // state before action
+//   const result = next(action);                // dispatch action
+//   const nextState = storeAPI.getState(); 
+//   const changedSlices = R.keys(  R.pickBy((val, key) => !R.equals(val, prevState[key]), nextState));
+//   console.log(changedSlices);
 
-  return result
-};
+//   return result
+// };
 
 
 
@@ -51,7 +49,7 @@ export const userStore = configureStore({
     user,
     userSession
   },
-  middleware:getDefaultMiddleware=>getDefaultMiddleware().concat(userPreProcessMiddleWare,userPostProcessMiddleWare,trackActionMiddleware),
+  middleware:getDefaultMiddleware=>getDefaultMiddleware().concat(userPreProcessMiddleWare,userPostProcessMiddleWare),
   devTools: process.env.NODE_ENV !== "production",
 });
 
