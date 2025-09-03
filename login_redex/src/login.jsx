@@ -9,6 +9,7 @@ import { invalidUser } from './dataHandler/user/userMiddleware';
 import "./login.css"
 import * as R from 'ramda'
 import { isBlank } from './ramadaFunctions';
+import { faCircleUser, faHourglass3 } from '@fortawesome/free-solid-svg-icons';
 
 
 //Hello
@@ -63,7 +64,8 @@ export  default  function Login({getUser}) {
          placeholder="Enter Your UserName"
          inlineValidation={()=>user.error[setUsername.type]||""}
          inlineRestrtiction={()=>user.block[setUsername.type]||""}
-         leadingIcon={"hello"}
+         leadingIcon={<h3>N</h3>}
+         trailingIcon={"write"}
          />
 
         <TextField 
@@ -73,6 +75,8 @@ export  default  function Login({getUser}) {
          placeholder="Enter Your Password"
          inlineValidation={()=>user.error[setPassword.type]||""}
          inlineRestrtiction={()=>user.block[setPassword.type]||""}
+         leadingIcon={<h3>P</h3>}
+         trailingIcon={"write"}
          type='password'
          />
 
@@ -109,13 +113,15 @@ export  default  function Login({getUser}) {
 
 };
 
-function TextField({value,onChange,label,placeholder,inlineValidation,inlineRestrtiction,type='text',leadingIcon}){
+function TextField({value,onChange,label,placeholder,inlineValidation,inlineRestrtiction,type='text',trailingIcon,leadingIcon}){
   return <div className='textField'> 
     <label>{label}</label>
+    <div className='field'>
     {leadingIcon&&<div className='leadingIcon'>{leadingIcon}</div>}
     <input type={type} onCopy={(e)=>{ if(type=='password') e.preventDefault() }} onCut={(e)=>{ if(type) e.preventDefault() }} onPaste={(e)=>{ if(type=='password') e.preventDefault() }} value={value} onChange={(e)=> {onChange(e.currentTarget.value)}} placeholder={placeholder} /> 
-    {/* <button type="button" tabIndex={value?0:-1} disabled={!value} onClick={()=>{ onChange("")} }>X</button> */}
-    <p>{inlineValidation&&R.isNotNil(inlineValidation(value))?inlineValidation(value):"Empty Validation Function"}</p>
+    {trailingIcon&&<div className='trailingIcon'>{trailingIcon}</div>}
+    </div>
+    {inlineValidation(value)&&<p>{inlineValidation&&R.isNotNil(inlineValidation(value))?inlineValidation(value):"Empty Validation Function"}</p>}
     <p>{inlineRestrtiction&&R.isNotNil(inlineRestrtiction(value))?inlineRestrtiction(value):"Empty Validation Function"}</p>
     </div>
 }

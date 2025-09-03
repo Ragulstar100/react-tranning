@@ -17,7 +17,7 @@ const PRE_RULES = {
 
   const errorDebounce = debounceFunction((store,blocks)=>{
     store.dispatch(setError(blocks))
-  }, 2000)
+  }, 500)
 
 
    

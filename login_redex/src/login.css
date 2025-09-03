@@ -110,16 +110,20 @@ opacity: 60%;
 }
 
 
+
+
+
 .textField {
     position: relative;
     display:flex;
     flex-direction: column;
     width: 100%;
     justify-items: center;
+    min-height: 120px;
   }
 
   .textField input::placeholder{
-    color: gray;
+    color: #808080;
     opacity: 0.3;
     font-size: 0.9rem;
   }
@@ -127,24 +131,42 @@ opacity: 60%;
   
   .textField label {
     width: 100%;
+    padding: 5px 0px;
   }
   .textField input {
       width: 80%;
       padding: 0.6rem; 
       font-size: 1.0rem;
-      border: 1px solid #d1d5db; 
-      border-radius: 8px;
+      outline: none;
+      border: none;
+      background: transparent;
   }
   
-  .textField input:focus {
+  .textField .field:focus-within {
       outline: none; 
-      border-color: #22d3ee; 
-      border-width: 2px; 
       transition: border-color 0.2s ease-in-out;
+      border-color: rgb(50, 115, 220);
   }
 
-  .textField .leadingIcon{
-    color: #9d0147;
+  .textField .trailingIcon{
+    display: none;
+  }
+
+  .textField input:focus + .trailingIcon {
+    display: block;
+  }
+
+  
+
+
+  .textField .field{
+    display: flex;
+    align-items: center;
+    border: solid 2px;
+    border-color: rgba(50, 115, 220, 0.3);
+    border-radius:8px;
+    justify-content:flex-start;
+    padding: 5px 6px;
   }
 
   
@@ -161,7 +183,7 @@ opacity: 60%;
     justify-self: start;
     color: #ef4444; 
     width: 100%;
-    height: 20px;
+    height: fit-content;
     white-space: pre-wrap;
     text-align: left;
     line-height: 2;
@@ -171,5 +193,4 @@ opacity: 60%;
 
   .textField p:nth-last-of-type(1) {
     color: #4480ef; 
-    height:fit-content;
   }

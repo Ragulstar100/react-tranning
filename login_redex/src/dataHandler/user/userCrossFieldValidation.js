@@ -11,9 +11,7 @@ export function userEmpty(){
 
  
    
-      function inner(user){
-        
-         
+      function inner(user){ 
         return !allUndefined(error)||!(user.userName&&user.password)
       }
 
