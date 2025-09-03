@@ -12,7 +12,8 @@ export const intialUserState = {
   block:{},
 };
 
-export let  userFunctions={isEmpty:userEmpty,
+export let  userFunctions={
+  isEmpty:userEmpty,
   isNotValid:userNotValid
 }
 

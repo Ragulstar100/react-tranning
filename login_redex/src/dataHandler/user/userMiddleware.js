@@ -1,8 +1,9 @@
 import { FIELD_VALIDATION_RULES,fieldValidator} from '../validater/fieldValidationRules';
 import { restrict,validate as setError } from './userMainSlice';
 import { allUndefined, debounceFunction } from '../../ramadaFunctions';
+import { userNotValid } from './userCrossFieldValidation';
 
-
+export var invalidUser=userNotValid({})
 
 const PRE_RULES = {
     ["user/setUsername"] : {  types: [FIELD_VALIDATION_RULES.isLengthMax20.type,FIELD_VALIDATION_RULES.isAlphaNumericWith_.type], shouldBlock: true },
@@ -17,6 +18,8 @@ const PRE_RULES = {
   const errorDebounce = debounceFunction((store,blocks)=>{
     store.dispatch(setError(blocks))
   }, 2000)
+
+
    
   export const runUserValidation = (store,payload,type, {  types, shouldBlock }) => {
     const validate = fieldValidator({ payload: payload, type: types });
@@ -27,6 +30,7 @@ const PRE_RULES = {
       store.dispatch(restrict(blocks));
     }else{
       const blocks = { ...store.getState().user.error, [type]: validate };
+      invalidUser=userNotValid(blocks)
       errorDebounce(store,blocks)
       if(!validate){
         store.dispatch(setError(blocks))

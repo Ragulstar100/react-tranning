@@ -4,6 +4,7 @@ import { setUsername,setPassword,clearUser, validate,setUser, userFunctions} fro
 import { setSessionUser,setLocalUser,removeLocalUser,getLoginData as loginStatus,setLoginData } from './dataHandler/user/userSessionSlice';
 import { getLoginData } from "./dataHandler/user/userStore";
 import { useSelector, useDispatch } from 'react-redux';
+import { invalidUser } from './dataHandler/user/userMiddleware';
 
 import "./login.css"
 import * as R from 'ramda'
@@ -62,6 +63,7 @@ export  default  function Login({getUser}) {
          placeholder="Enter Your UserName"
          inlineValidation={()=>user.error[setUsername.type]||""}
          inlineRestrtiction={()=>user.block[setUsername.type]||""}
+         leadingIcon={"hello"}
          />
 
         <TextField 
@@ -77,7 +79,7 @@ export  default  function Login({getUser}) {
 
         <div className='actionBar'>
         <button type='button' tabIndex={user.isEmpty()?-1:0} disabled={user.isEmpty()}    onClick={()=>{ dispatch(clearUser()) }}>clear</button>
-        <button type='submit' tabIndex={user.isNotValid()?-1:0 } disabled={user.isNotValid()} onClick={(event)=>{
+        <button type='submit' tabIndex={user.isNotValid()?-1:0 } disabled={invalidUser(user)} onClick={(event)=>{
             getLoginData(user.userName,user.password).then((user)=>{
                 if(rememberMe){
                     dispatch(setLocalUser(user))
@@ -92,7 +94,7 @@ export  default  function Login({getUser}) {
         }}>Submit</button>
 
         </div>
-        <div className='footer'>
+        <footer>
 
             <button type='button' onClick={()=>{
             setMsg("Forgot Password:Contact Admin +91 9876543210")
@@ -102,14 +104,15 @@ export  default  function Login({getUser}) {
             <label >Remember Me <input type='checkbox' onChange={(e)=>{
                 setRememberMe(e.currentTarget.checked)
             }} /></label>
-        </div>
+        </footer>
     </form></div>
 
 };
 
-function TextField({value,onChange,label,placeholder,inlineValidation,inlineRestrtiction,type='text'}){
+function TextField({value,onChange,label,placeholder,inlineValidation,inlineRestrtiction,type='text',leadingIcon}){
   return <div className='textField'> 
     <label>{label}</label>
+    {leadingIcon&&<div className='leadingIcon'>{leadingIcon}</div>}
     <input type={type} onCopy={(e)=>{ if(type=='password') e.preventDefault() }} onCut={(e)=>{ if(type) e.preventDefault() }} onPaste={(e)=>{ if(type=='password') e.preventDefault() }} value={value} onChange={(e)=> {onChange(e.currentTarget.value)}} placeholder={placeholder} /> 
     {/* <button type="button" tabIndex={value?0:-1} disabled={!value} onClick={()=>{ onChange("")} }>X</button> */}
     <p>{inlineValidation&&R.isNotNil(inlineValidation(value))?inlineValidation(value):"Empty Validation Function"}</p>

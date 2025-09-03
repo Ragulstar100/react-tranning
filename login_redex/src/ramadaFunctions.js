@@ -28,6 +28,5 @@ export let debounceFunction = (func, delay) => {
     return function(...args) {
         clearTimeout(timeout);
         timeout = setTimeout(() => func.apply(this, args), delay);
-       
     };
 }
