@@ -5,7 +5,7 @@
   text-align: center;
 }
 
-.logo {
+/* .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
@@ -39,5 +39,9 @@
 
 .read-the-docs {
   color: #888;
-} */
+} */ 
+
+#root{
+  background-image: linear-gradient(to left bottom, #290537, #630047, #9d0147, #cd2e38, #eb6312);
+}
 

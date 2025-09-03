@@ -12,8 +12,8 @@ export const intialUserState = {
   block:{},
 };
 
-export let  userFunctions={isEmpty:userEmpty,
-  isNotValid:userNotValid
+export let  userFunctions={
+  isEmpty:userEmpty
 }
 
 const useSetSlice = createSlice({

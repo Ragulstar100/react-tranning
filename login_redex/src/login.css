@@ -1,9 +1,13 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+
+
 *{
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   /* i will  change as Nunito sans*/
-  font-family: 'Courier New', Courier, monospace ;
+  font-family: "Nunito Sans", sans-serif;
 }
 
 #root{
@@ -12,6 +16,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background-image: linear-gradient(to left bottom, #290537, #630047, #9d0147, #cd2e38, #eb6312);
 }
 
 /* {
@@ -36,21 +41,23 @@
     display: flex;
     flex-direction: column;
     width: 400px;
-    border: 2px #22d3ee solid;
+    height: 75%;
+    background: white;
     border-radius:10px;
-    align-content: flex-start;
     padding:20px;
-   gap: 10px;
+   gap: 15px;
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 1);
 }
 
-.footer{
+footer{
+
   color: #4480ef;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+
 }
 
-.footer button{
+footer button{
   all:unset;
   color: black;
 }
@@ -102,16 +109,17 @@ opacity: 60%;
   cursor: pointer;
 }
 
-
 .textField {
+    position: relative;
     display:flex;
     flex-direction: column;
     width: 100%;
     justify-items: center;
+    min-height: 120px;
   }
 
   .textField input::placeholder{
-    color: gray;
+    color: #808080;
     opacity: 0.3;
     font-size: 0.9rem;
   }
@@ -119,21 +127,50 @@ opacity: 60%;
   
   .textField label {
     width: 100%;
+    padding: 5px 0px;
   }
+
+  .textField .leadingIcon{
+    width:fit-content;
+    height: fit-content;
+  }
+
   .textField input {
       width: 80%;
       padding: 0.6rem; 
       font-size: 1.0rem;
-      border: 1px solid #d1d5db; 
-      border-radius: 8px;
+      outline: none;
+      border: none;
+      background: transparent;
   }
   
-  .textField input:focus {
+  .textField .field:focus-within {
       outline: none; 
-      border-color: #22d3ee; 
-      border-width: 2px; 
       transition: border-color 0.2s ease-in-out;
+      border-color: rgb(50, 115, 220);
   }
+
+  .textField .trailingIcon{
+    display: none;
+  }
+
+  .textField input:focus + .trailingIcon {
+    display: block;
+  }
+
+  
+
+
+  .textField .field{
+    display: flex;
+    align-items: center;
+    border: solid 2px;
+    border-color: rgba(50, 115, 220, 0.3);
+    border-radius:8px;
+    justify-content:flex-start;
+    padding: 5px 6px;
+  }
+
   
   .textField button {
     padding: 0.5rem 1rem; 
@@ -148,7 +185,7 @@ opacity: 60%;
     justify-self: start;
     color: #ef4444; 
     width: 100%;
-    height: 20px;
+    height: fit-content;
     white-space: pre-wrap;
     text-align: left;
     line-height: 2;
@@ -158,5 +195,4 @@ opacity: 60%;
 
   .textField p:nth-last-of-type(1) {
     color: #4480ef; 
-    height:fit-content;
   }

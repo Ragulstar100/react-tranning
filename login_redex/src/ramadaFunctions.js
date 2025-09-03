@@ -20,15 +20,13 @@ export let isNegative= (value)=> value<0
 
 export let isPostive= (value)=>value>0
 
-export function debounceByKey(fn, delay) {
-    const timers = {};
-    return (key, ...args) => {
-      if (timers[key]) {
-        clearTimeout(timers[key]); 
-      }
-      timers[key] = setTimeout(() => {
-      fn(...args);
-      delete timers[key];
-      }, delay);
+export const allUndefined = (obj) => R.all(R.isNil, R.values(obj));
+
+
+export let debounceFunction = (func, delay) => {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func(...args), delay);
     };
-  }
+}

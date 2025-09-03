@@ -1,8 +1,16 @@
-import { debounceByKey } from '../../ramadaFunctions';
+
 import { FIELD_VALIDATION_RULES,fieldValidator} from '../validater/fieldValidationRules';
 import { restrict,validate as setError } from './userMainSlice';
-import * as R  from 'ramda'
+import { allUndefined, debounceFunction } from '../../ramadaFunctions';
+import { userNotValid } from './userCrossFieldValidation';
 
+// this function used for transer ther validarion error without debounce delay
+export var invalidUser=userNotValid({})
+
+
+/* These variable contains rules restrict rules.
+if restrict rule pass only update on state.
+ but validate wheather validaton sucess or fail always update on state*/
 const PRE_RULES = {
     ["user/setUsername"] : {  types: [FIELD_VALIDATION_RULES.isLengthMax20.type,FIELD_VALIDATION_RULES.isAlphaNumericWith_.type], shouldBlock: true },
     ["user/setPassword"]: {  types: FIELD_VALIDATION_RULES.isLengthMax10.type, shouldBlock: true }
@@ -15,37 +23,38 @@ const PRE_RULES = {
 
 
 
-  const errorDelay =(store,blocks)=>{
-
-          let emp=Object.values(blocks).filter((e)=>e).length==0
-
-          if(emp){
-            store.dispatch(setError(blocks));
-          }else{
-            console.log(emp)
-            debounceByKey((_blocks)=>{  
-            store.dispatch(setError(_blocks)); 
-            },2000)("emptyDelay",blocks)
-          }
-  }
+/* Does not show validation util user complete typeing.
+Error only shows after typeing stops for 500ms 
+*/
+  const errorDebounce = debounceFunction((store,blocks)=>{
+    store.dispatch(setError(blocks||{}))
+  }, 500)
 
 
+  /*runs All validation rules and store in state and Excicute*/
   export const runUserValidation = (store,payload,type, {  types, shouldBlock }) => {
     const validate = fieldValidator({ payload: payload, type: types });
+
     
 
     if(shouldBlock){
       const blocks = { ...store.getState().user.block, [type]: validate };
       store.dispatch(restrict(blocks));
     }else{
-       const blocks = { ...store.getState().user.error, [type]: validate };
-       errorDelay(store,blocks)
+      const blocks = { ...store.getState().user.error, [type]: validate };
+      invalidUser=userNotValid(blocks)
+      errorDebounce(store,blocks)
+      if(!validate){
+        store.dispatch(setError(blocks))
+      }
+      
       return true
     }
 
     return !validate;
   };
 
+  //before state update execution
   export const userPreProcessMiddleWare = store => next => action => {
     const rule = PRE_RULES[action.type];
     if (rule) {
@@ -57,7 +66,7 @@ const PRE_RULES = {
   };
 
 
-  
+  //After state update execution
   export const userPostProcessMiddleWare = store => next => action => {
     const rule = POST_RULES[action.type];
     if (rule) runUserValidation(store, action.payload,action.type, rule);

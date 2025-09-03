@@ -1,10 +1,17 @@
-import { isBlank} from '../../ramadaFunctions';
+import { allUndefined, isBlank} from '../../ramadaFunctions';
 import * as R from 'ramda'
+
+
 
 export function userEmpty(){
     return isBlank(this.userName)&&isBlank(this.password)
  }
  
- export function userNotValid(){
-    return R.isNotEmpty(this.error)||!(this.userName&&this.password)
- }
+/* 
+   This curried function is used to memoize errors from users 
+   and immediately disable the submit button if an error exists, 
+   without applying a debounce delay. 
+*/
+ export const userNotValid= (error)=>(user)=>!allUndefined(error)||!(user.userName&&user.password)
+      
+ 
