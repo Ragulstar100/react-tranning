@@ -19,3 +19,15 @@ export let isZero= (value)=> value=='0'
 export let isNegative= (value)=> value<0
 
 export let isPostive= (value)=>value>0
+
+export const allUndefined = (obj) => R.all(R.isNil, R.values(obj));
+
+
+export let debounceFunction = (func, delay) => {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+       
+    };
+}

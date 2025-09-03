@@ -31,15 +31,7 @@ export function getLoginData(username, password) {
   });
 }
 
-// const trackActionMiddleware = storeAPI => next => action => {
-//   const prevState = storeAPI.getState();      // state before action
-//   const result = next(action);                // dispatch action
-//   const nextState = storeAPI.getState(); 
-//   const changedSlices = R.keys(  R.pickBy((val, key) => !R.equals(val, prevState[key]), nextState));
-//   console.log(changedSlices);
 
-//   return result
-// };
 
 
 
