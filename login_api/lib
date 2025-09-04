@@ -1,0 +1,14 @@
+npm init -y  -intialize npm using for create package.json
+
+npm install -g nodemon -nodemon for if program runs Automatically without
+
+npm install cors
+
+//Mongo Db
+npm install mongodb
+npm install mongoose
+
+
+
+
+

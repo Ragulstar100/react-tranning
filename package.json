@@ -7,6 +7,7 @@
     "@fortawesome/free-solid-svg-icons": "^7.0.1",
     "@fortawesome/react-fontawesome": "^3.0.2",
     "@reduxjs/toolkit": "^2.8.2",
+    "express": "^5.1.0",
     "focus-trap-react": "^11.0.4",
     "ramda": "^0.31.3",
     "react": "^18.3.1",

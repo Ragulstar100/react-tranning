@@ -19,15 +19,6 @@
   background-image: linear-gradient(to left bottom, #290537, #630047, #9d0147, #cd2e38, #eb6312);
 }
 
-/* {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Courier New', Courier, monospace;
-  background: #22d3ee;
-} */
 
 .home{
  display: flex;

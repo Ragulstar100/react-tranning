@@ -5,31 +5,41 @@ import { userPostProcessMiddleWare, userPreProcessMiddleWare } from './userMiddl
 import * as R from 'ramda'
 
 
-
 export function getLoginData(username, password) {
   return new Promise((resolve, reject) => {
-    fetch('private/auth.json')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(loginData => {
-        const user = loginData.find(user => user.userName === username&&user.password===password);
+    try{
+    fetch("http://localhost:5000/login/login/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userName: username, password }),
+    })
+      .then((response) => {
+    
+          return response.json();
         
-        if (!user) {
-          reject(new Error('Invalid user Name or Password'));
+      })
+      .then((res) => {
+        if (!res) return; // exit if response.json() was not returned
+
+        if (res.msg) {
+          resolve({ username, password }); // login success
         } else {
-          resolve(user);
+          reject("Invalid Username or Password"); // login fail
         }
       })
-      .catch(error => {
-        // For any fetch or parsing error
-        reject(error);
+      .catch((error) => {
+        // Network error or server down
+        reject( "Server is not available");
       });
+    }catch(error){
+     
+    }
   });
 }
+
+
+
+
 
 
 

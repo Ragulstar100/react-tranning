@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import {  userNotValid,userEmpty } from './userCrossFieldValidation';
+import { userEmpty } from './userCrossFieldValidation';
 
 
 
@@ -35,6 +35,8 @@ const useSetSlice = createSlice({
     clearUser: (state) => {
       state.userName = undefined;
       state.password = undefined;
+      state.error={}
+      state.block={}
     },
     validate:(state,action)=>{
         state.error=action.payload
