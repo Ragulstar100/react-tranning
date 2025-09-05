@@ -1,2 +1,8 @@
 
-/* for future use */
+:root {
+    --primaryColor: rgb(50, 115, 220);
+    --onPrimaryColor:rgba(50, 115, 220, 0.3);
+    --error:#ef4444;
+    --restrict:#4480ef;
+  }
+  

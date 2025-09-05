@@ -1,7 +1,7 @@
 
 import { FIELD_VALIDATION_RULES,fieldValidator} from '../validater/fieldValidationRules';
 import { restrict,validate as setError } from './userMainSlice';
-import {  debounceFunction } from '../../projectModule/ramadaFunctions';
+import {  debounceFunction } from '../../commonModule/ramadaFunctions';
 import { userNotValid } from './userCrossFieldValidation';
 
 // this function used for transer ther validarion error without debounce delay

@@ -21,6 +21,8 @@ const App = () => {
   
     if (userSession.sessionUser) {
       dispatch(setUser(userSession.sessionUser));
+      _setUser(userSession.sessionUser)
+      alert("reduxdata",JSON.stringify(user),"res",JSON.stringify(_user))
       dispatch(setToken(true));
     }
   }, [userSession,user.token]);

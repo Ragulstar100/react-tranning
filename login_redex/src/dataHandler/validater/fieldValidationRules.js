@@ -1,4 +1,4 @@
-import { isNotBlank,isMatch,isNotMatch,andFunction,orFunction } from '../../projectModule/ramadaFunctions';
+import { isNotBlank,isMatch,isNotMatch,and,or } from '../../commonModule/ramadaFunctions';
 
 const userNameRegex = /^[A-Za-z0-9]*(_[A-Za-z0-9]+)*$/;
 const userNameRegex1 = /^[A-Za-z0-9]*(_[A-Za-z0-9]+)*_$/;
@@ -11,7 +11,7 @@ export const FIELD_VALIDATION_RULES = {
         type: "isNotEmpty"
     },
     isAlphaNumericWith_: {
-        check: (payload) => andFunction(isMatch(/^(?!_).*/), orFunction(isMatch(userNameRegex), isMatch(userNameRegex1)))(payload),
+        check: (payload) => and(isMatch(/^(?!_).*/), or(isMatch(userNameRegex), isMatch(userNameRegex1)))(payload),
         message: "Field only Allowed AlphaNumeric With Underscore Style (Hello_World)",
         type: "isAlphaNumericWith_"
     },

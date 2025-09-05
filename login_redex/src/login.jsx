@@ -9,6 +9,7 @@ import { invalidUser } from './dataHandler/user/userMiddleware';
 
 
 import "./css/login.css"
+import "./css/textField.css"
 import { faCircleUser,faKey} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ProjectTextField1 } from './component /project_components/projectTextField';
@@ -16,7 +17,7 @@ import { ProjectTextField1 } from './component /project_components/projectTextFi
 
 
 
-export  default  function Login({getUser}) {
+export  default  function Login() {
 
     const dispatch=useDispatch()
     const user=useSelector((state)=>({...state.user,...userFunctions}))
@@ -64,7 +65,8 @@ export  default  function Login({getUser}) {
         <h5>{msg||""}</h5>
       
         <ProjectTextField1 
-        value={user.userName||''}
+         value={user.userName||''}
+         autoFocus={true}
          onChange={(value)=>dispatch(setUsername(value))}
          label="User Name"
          placeholder="Enter Your UserName"
@@ -78,6 +80,7 @@ export  default  function Login({getUser}) {
          value={user.password||''}
          onChange={(value)=>dispatch(setPassword(value))}
          label="Password"
+         blockPaste={false}
          placeholder="Enter Your Password"
          inlineValidation={()=>user.error[setPassword.type]||""}
          inlineRestrtiction={()=>user.block[setPassword.type]||""}
@@ -98,7 +101,7 @@ export  default  function Login({getUser}) {
                 }
                 dispatch(setToken(true))
             }).catch((error)=>{
-                setMsg(error)
+                 setMsg(error)
             })
     
             event.preventDefault()

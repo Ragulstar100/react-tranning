@@ -6,7 +6,7 @@ import * as R from 'ramda'
 
 import { getSessionUser, setSessionUser, removeSessionUser,getUser,setUser,removeUser,setLoginData,getLoginData } from './sessionHandler'
 
-import { orFunction, andFunction, isBlank, isNotBlank, isMatch } from './ramadaFunctions'
+import { or, and, isBlank, isMatch } from './ramadaFunctions'
 
 //const removeLoginData = (data) => localStorage.removeItem("loginData" + data.userName);
 
@@ -47,7 +47,7 @@ function validate() {
     const validateArray = new Array(Object.keys(this).length)
 
 
-    if (!andFunction(isMatch(/^(?!_).*/),orFunction(isMatch(userNameRegex), isMatch(userNameRegex1)))(userName)) {
+    if (!and(isMatch(/^(?!_).*/),or(isMatch(userNameRegex), isMatch(userNameRegex1)))(userName)) {
         validateArray[0] = "1.UserName Should Start With A-Z, a-z, 0-9 \n 2.Can Contain _ But Not At The End Or Start \n 3.Special Characters Not Allowed";
     } else if (userName&&userName.length > 20) {
         validateArray[0] = "Length Exceed UserName";
