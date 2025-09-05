@@ -1,7 +1,7 @@
 
 import { FIELD_VALIDATION_RULES,fieldValidator} from '../validater/fieldValidationRules';
 import { restrict,validate as setError } from './userMainSlice';
-import { allUndefined, debounceFunction } from '../../ramadaFunctions';
+import {  debounceFunction } from '../../projectModule/ramadaFunctions';
 import { userNotValid } from './userCrossFieldValidation';
 
 // this function used for transer ther validarion error without debounce delay
@@ -26,8 +26,8 @@ const PRE_RULES = {
 /* Does not show validation util user complete typeing.
 Error only shows after typeing stops for 500ms 
 */
-  const errorDebounce = debounceFunction((store,blocks)=>{
-    store.dispatch(setError(blocks||{}))
+  const errorDebounce = debounceFunction((store,errors)=>{
+    store.dispatch(setError(errors||{}))
   }, 500)
 
 
@@ -38,14 +38,14 @@ Error only shows after typeing stops for 500ms
     
 
     if(shouldBlock){
-      const blocks = { ...store.getState().user.block, [type]: validate };
-      store.dispatch(restrict(blocks));
+      const errors = { ...store.getState().user.block, [type]: validate };
+      store.dispatch(restrict(errors));
     }else{
-      const blocks = { ...store.getState().user.error, [type]: validate };
-      invalidUser=userNotValid(blocks)
-      errorDebounce(store,blocks)
+      const errors = { ...store.getState().user.error, [type]: validate };
+      invalidUser=userNotValid(errors)
+      errorDebounce(store,errors)
       if(!validate){
-        store.dispatch(setError(blocks))
+        store.dispatch(setError(errors))
       }
       
       return true

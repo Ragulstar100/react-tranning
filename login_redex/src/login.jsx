@@ -1,19 +1,20 @@
 
 import { useEffect, useState } from 'react';
-import { setUsername,setPassword,clearUser, setUser, userFunctions} from './dataHandler/user/userMainSlice';
+import { setUsername,setPassword,clearUser, setUser, userFunctions, setToken, intialUserState} from './dataHandler/user/userMainSlice';
 import { setSessionUser,setLocalUser,getLoginData as loginStatus,setLoginData } from './dataHandler/user/userSessionSlice';
 import { getLoginData } from "./dataHandler/user/userStore";
 import { useSelector, useDispatch } from 'react-redux';
 import { invalidUser } from './dataHandler/user/userMiddleware';
-import { TextField } from './component /common_components/textField';
 
 
-import "./login.css"
-import { faCircleUser, faHourglass3,faKey} from '@fortawesome/free-solid-svg-icons';
+
+import "./css/login.css"
+import { faCircleUser,faKey} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ProjectTextField1 } from './component /project_components/projectTextField';
 
 
-//Hello
+
 
 export  default  function Login({getUser}) {
 
@@ -26,7 +27,7 @@ export  default  function Login({getUser}) {
     const [msg,setMsg]=useState(undefined)
 
     useEffect(()=>{
-        dispatch(setUser({}))
+        dispatch(setUser(intialUserState))
     },[])
 
  
@@ -35,18 +36,18 @@ export  default  function Login({getUser}) {
     useEffect(()=>{
 
         if(userSession.user){
-            dispatch(setUser(userSession.user))
-           if(user.userName) getUser(user)
+             dispatch(setUser(userSession.user))
         }
         if(userSession.sessionUser){
-            dispatch(setUser(userSession.sessionUser))
-            if(user.userName) getUser(user)
+             dispatch(setUser(userSession.sessionUser))
+             console.log(userSession.sessionUser)
         }
 
-       // alert(user.userName)
- 
+       
       
-    },[userSession.user,userSession.sessionUser,user.userName])
+    },[userSession.user,userSession.sessionUser])
+
+   
 
     useEffect(()=>{
        // dispatch(validate())
@@ -62,7 +63,7 @@ export  default  function Login({getUser}) {
         <h4>Enter Your UserName And Password</h4>
         <h5>{msg||""}</h5>
       
-        <TextField 
+        <ProjectTextField1 
         value={user.userName||''}
          onChange={(value)=>dispatch(setUsername(value))}
          label="User Name"
@@ -73,7 +74,7 @@ export  default  function Login({getUser}) {
          />
 
 
-        <TextField 
+        <ProjectTextField1
          value={user.password||''}
          onChange={(value)=>dispatch(setPassword(value))}
          label="Password"
@@ -95,6 +96,7 @@ export  default  function Login({getUser}) {
                 }else{
                     dispatch(setSessionUser(user))
                 }
+                dispatch(setToken(true))
             }).catch((error)=>{
                 setMsg(error)
             })
@@ -109,7 +111,6 @@ export  default  function Login({getUser}) {
             <button type='button' onClick={()=>{
             setMsg("Forgot Password:Contact Admin +91 9876543210")
             }}>Forget Password?</button>
-
 
             <label >Remember Me <input type='checkbox' onChange={(e)=>{
                 setRememberMe(e.currentTarget.checked)

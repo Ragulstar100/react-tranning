@@ -29,6 +29,7 @@
 }
 
 .login{
+    position: relative;
     display: flex;
     flex-direction: column;
     width: 400px;
@@ -45,6 +46,9 @@ footer{
   color: #4480ef;
   display: flex;
   justify-content: space-between;
+  position: absolute;
+  width: 90%;
+  bottom: 25px;
 
 }
 

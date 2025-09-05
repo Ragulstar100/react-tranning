@@ -1,4 +1,4 @@
-import { isNotBlank,isMatch,isNotMatch,andFunction,orFunction } from '../../ramadaFunctions';
+import { isNotBlank,isMatch,isNotMatch,andFunction,orFunction } from '../../projectModule/ramadaFunctions';
 
 const userNameRegex = /^[A-Za-z0-9]*(_[A-Za-z0-9]+)*$/;
 const userNameRegex1 = /^[A-Za-z0-9]*(_[A-Za-z0-9]+)*_$/;

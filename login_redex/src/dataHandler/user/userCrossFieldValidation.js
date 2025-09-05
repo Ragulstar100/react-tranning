@@ -1,4 +1,4 @@
-import { allUndefined, isBlank} from '../../ramadaFunctions';
+import { allUndefined, isBlank} from '../../projectModule/ramadaFunctions';
 import * as R from 'ramda'
 
 

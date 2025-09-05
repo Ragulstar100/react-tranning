@@ -7,6 +7,7 @@ import { userEmpty } from './userCrossFieldValidation';
 export const intialUserState = {
   userName:undefined,
   password:undefined,
+  token:false,
   error:{},
   //Contains input Restrictions Messages
   block:{},
@@ -32,6 +33,10 @@ const useSetSlice = createSlice({
      state.password=action.payload 
      state.block={...state.block,password:action.restrict}
     },
+    setToken:(state,action)=>{
+      state.token=action.payload
+    }
+    ,
     clearUser: (state) => {
       state.userName = undefined;
       state.password = undefined;
@@ -49,5 +54,5 @@ const useSetSlice = createSlice({
   },
 });
 
-export const { setUsername, setPassword, clearUser,validate,restrict,setUser } = useSetSlice.actions;
+export const { setUsername, setPassword, clearUser,validate,restrict,setUser,setToken } = useSetSlice.actions;
 export default useSetSlice.reducer;

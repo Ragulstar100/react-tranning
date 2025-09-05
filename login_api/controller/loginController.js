@@ -8,7 +8,7 @@ export const loginController= async (req,res) =>{
     res.status(200).json({msg:"sucess"})
     }
     catch(error){
-    res.status(400).json({error:error})    
+    res.status(400).json(error)    
     }
     
 }  

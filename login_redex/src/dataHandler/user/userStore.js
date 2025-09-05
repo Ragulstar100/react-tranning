@@ -4,6 +4,14 @@ import userSession from './userSessionSlice.js';
 import { userPostProcessMiddleWare, userPreProcessMiddleWare } from './userMiddleware.js';
 import * as R from 'ramda'
 
+export const userStore = configureStore({
+  reducer: {
+    user,
+    userSession
+  },
+  middleware:getDefaultMiddleware=>getDefaultMiddleware().concat(userPreProcessMiddleWare,userPostProcessMiddleWare),
+  devTools: process.env.NODE_ENV !== "production",
+});
 
 export function getLoginData(username, password) {
   return new Promise((resolve, reject) => {
@@ -19,16 +27,16 @@ export function getLoginData(username, password) {
         
       })
       .then((res) => {
-        if (!res) return; // exit if response.json() was not returned
+        if (!res) return; 
 
         if (res.msg) {
-          resolve({ username, password }); // login success
+          resolve({ userName:username, password }); 
         } else {
-          reject("Invalid Username or Password"); // login fail
+          console.log(res)
+          reject(res); 
         }
       })
       .catch((error) => {
-        // Network error or server down
         reject( "Server is not available");
       });
     }catch(error){
@@ -36,26 +44,6 @@ export function getLoginData(username, password) {
     }
   });
 }
-
-
-
-
-
-
-
-
-
-
-export const userStore = configureStore({
-  reducer: {
-    user,
-    userSession
-  },
-  middleware:getDefaultMiddleware=>getDefaultMiddleware().concat(userPreProcessMiddleWare,userPostProcessMiddleWare),
-  devTools: process.env.NODE_ENV !== "production",
-});
-
-
 
 
 

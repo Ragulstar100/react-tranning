@@ -2,32 +2,40 @@ import React, { useEffect, useState } from 'react';
 import Login from './login';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeLocalUser, removeSessionUser } from './dataHandler/user/userSessionSlice';
-import { intialUserState, setUser } from './dataHandler/user/userMainSlice';
+import { intialUserState, setToken, setUser } from './dataHandler/user/userMainSlice';
+import { Home } from '../home';
 
-
-// Main App component that renders the login page
 const App = () => {
-  const [user, setUser] = useState(intialUserState)
   const dispatch = useDispatch()
+ 
+   const user=useSelector((state)=>state.user)
+   const [_user,_setUser]=useState(intialUserState)
+   const userSession=useSelector((state)=>state.userSession)
 
-  if (user.userName) return <Home user={user} logout={() => {
+
+   useEffect(() => {// debug
+    if (userSession.user) {
+      dispatch(setUser(userSession.user));
+      dispatch(setToken(true));
+    }
+  
+    if (userSession.sessionUser) {
+      dispatch(setUser(userSession.sessionUser));
+      dispatch(setToken(true));
+    }
+  }, [userSession,user.token]);
+
+
+  if (user.token) return <Home user={user} logout={() => {
     dispatch(removeLocalUser())
     dispatch(removeSessionUser())
-    dispatch(setUser(intialUserState))
+    dispatch(setToken(false))
   }} />
-  else return <> <Login getUser={(user) => { setUser(user); }} /></>
+  else return <> <Login /></>
 };
 
 
-function Home({ user, logout }) {
 
-
-
-return<> <div className='home'>
-   <label htmlFor=""> {user.userName} </label>
-    <button  style={{ height: "35px" }} onClick={() => { logout() }}> Logout </button>
-  </div> </>
-}
 
 
 export default App;

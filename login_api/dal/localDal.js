@@ -6,9 +6,9 @@ export async function getLoginData(username, password) {
   const users = JSON.parse(data);
 
   const user = users.find(
-    (u) => u.userName === username && u.password === password
+    (_user) => _user.userName === username && _user.password === password
   );
-
+  
   if (!user) {
     throw new Error("Invalid username or password");
   }
